@@ -10,7 +10,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 180vh;
+            height: 181vh;
             margin: 0;
             background-image: url('background.jpg.jpeg');
             background-repeat: no-repeat;
@@ -261,7 +261,10 @@
             const noteTextbox = document.getElementById("description");
 
             // Define the guidance and troubleshooting steps for each issue
-            let noteContent = `Name of caller:\nBest Callback #:\nWhich system/equipment is affected:\n\n`;
+            let noteContent = "";
+            if (issue !== "--") {
+                noteContent = `Name of caller:\nBest Callback #:\nAny existing ticket:\nWhich system/equipment is affected:\nWhat specific error occurred:\nOn which device:\nAt what time:\nWhat Action was taken:\nExpected vs. Actual result:\nWhen did the issue start:\nAny related recent incidents:\n`;
+            }
 
             // Populate the "Note" textbox with the corresponding content
             noteTextbox.value = noteContent;
@@ -275,6 +278,9 @@
 
             if (/[^0-9]/.test(value)) {
                 alertElement.style.display = "block";
+                setTimeout(() => {
+                    alertElement.style.display = "none";
+                }, 1500);
                 input.value = value.replace(/[^0-9]/g, '');
             } else {
                 alertElement.style.display = "none";
@@ -289,6 +295,9 @@
             const isValidUrl = /^(https?:\/\/).+$/.test(value);
             if (!isValidUrl) {
                 alertElement.style.display = "block";
+                setTimeout(() => {
+                    alertElement.style.display = "none";
+                }, 3000);
                 input.value = value.replace(/^(?!https?:\/\/).*/, '');
             } else {
                 alertElement.style.display = "none";
@@ -309,7 +318,7 @@
             const resolver = document.getElementById("resolver").value || "";
             const issue = document.getElementById("issue").selectedOptions[0].text || "--";
             const description = document.getElementById("description").value || "";
-            const resolution = document.getElementById("resolution").value || "";
+            const resolution = document.getElementById("resolution").value || "No Resolution Yet";
             const kbArticle = document.getElementById("kbArticle").value || "No Article Available"; // Default message here
             const currentTimestamp = new Date().toLocaleString();
 
@@ -327,7 +336,7 @@ ${(departmentGroup && department) ? `Department: ${department}\n` : ''}Status: $
 IT Technician: ${resolver}
 Issue: ${issue}
 ${description ? `Note:\n${description}` : 'Note:'}
-${resolution ? `Resolution:\n${resolution}` : 'Resolution:'}
+Resolution:\n${resolution}
 KB Article/URL:\n${kbArticle}
 Date & Time: ${currentTimestamp}`;
 
