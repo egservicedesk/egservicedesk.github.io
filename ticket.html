@@ -229,6 +229,11 @@
             <textarea id="resolution" placeholder="Enter resolution details"></textarea>
         </div>
 
+        <div class="form-group">
+            <label for="kbArticle">KB Article/URL:</label>
+            <input type="text" id="kbArticle" placeholder="Enter KB article or URL">
+        </div>
+
         <div class="button-group">
             <button type="button" class="copy" onclick="copyDetails()">Copy</button>
             <button type="button" class="clear" onclick="clearForm()">Clear</button>
@@ -290,6 +295,7 @@
         const issue = document.getElementById("issue").selectedOptions[0].text || "--";
         const description = document.getElementById("description").value || "";
         const resolution = document.getElementById("resolution").value || "";
+        const kbArticle = document.getElementById("kbArticle").value || "";
         const currentTimestamp = new Date().toLocaleString();
 
         // Set the timestamp on the form
@@ -307,6 +313,7 @@ IT Technician: ${resolver}
 Issue: ${issue}
 ${description ? `Note:\n${description}` : 'Note:'}
 ${resolution ? `Resolution:\n${resolution}` : 'Resolution:'}
+${kbArticle ? `KB Article/URL:\n${kbArticle}` : 'KB Article/URL:'}
 Date & Time: ${currentTimestamp}`;
 
         // Copy to clipboard
@@ -329,7 +336,6 @@ Date & Time: ${currentTimestamp}`;
         document.getElementById("ticketNumberAlert").style.display = "none";
         document.getElementById("storeNumberAlert").style.display = "none";
     }
-
     </script>
 </body>
 </html>
