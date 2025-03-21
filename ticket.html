@@ -10,7 +10,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 157vh;
+            height: 180vh;
             margin: 0;
             background-image: url('background.jpg.jpeg');
             background-repeat: no-repeat;
@@ -310,7 +310,7 @@
             const issue = document.getElementById("issue").selectedOptions[0].text || "--";
             const description = document.getElementById("description").value || "";
             const resolution = document.getElementById("resolution").value || "";
-            const kbArticle = document.getElementById("kbArticle").value || "";
+            const kbArticle = document.getElementById("kbArticle").value || "No Article Available"; // Default message here
             const currentTimestamp = new Date().toLocaleString();
 
             // Set the timestamp on the form
@@ -328,7 +328,7 @@ IT Technician: ${resolver}
 Issue: ${issue}
 ${description ? `Note:\n${description}` : 'Note:'}
 ${resolution ? `Resolution:\n${resolution}` : 'Resolution:'}
-${kbArticle ? `KB Article/URL:\n${kbArticle}` : 'KB Article/URL:'}
+KB Article/URL:\n${kbArticle}
 Date & Time: ${currentTimestamp}`;
 
             // Copy to clipboard
