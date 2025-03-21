@@ -183,6 +183,16 @@
         </div>
 
         <div class="form-group">
+            <label for="issue">Issue</label>
+            <select id="issue">
+                <option value="Handheld Issue">Handheld Issue</option>
+                <option value="Fuel Pump Down">Fuel Pump Down</option>
+                <option value="Password Access/Issue">Password Access/Issue</option>
+                <option value="Payments: Credit/Debit Issues">Payments: Credit/Debit Issues</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label for="description">Note</label>
             <textarea id="description" placeholder="Enter note"></textarea>
         </div>
@@ -201,36 +211,60 @@
     </form>
 
     <script>
-        // Handle showing/hiding the Department field
-        document.getElementById("assignTo").addEventListener("change", function () {
-            const assignToValue = this.value;
-            const departmentGroup = document.getElementById("departmentGroup");
+            // Handle showing/hiding the Department field
+    document.getElementById("assignTo").addEventListener("change", function () {
+        const assignToValue = this.value;
+        const departmentGroup = document.getElementById("departmentGroup");
 
-            if (assignToValue === "Transfer") {
-                departmentGroup.style.display = "block";
-            } else {
-                departmentGroup.style.display = "none";
-            }
-        });
+        if (assignToValue === "Transfer") {
+            departmentGroup.style.display = "block";
+        } else {
+            departmentGroup.style.display = "none";
+        }
+    });
+document.getElementById("issue").addEventListener("change", function () {
+    const issue = this.value;
+    const noteTextbox = document.getElementById("description");
 
-        // Copy ticket details to clipboard
-        function copyDetails() {
-            const title = document.getElementById("title").value;
-            const ticketNumber = document.getElementById("ticketNumber").value;
-            const banner = document.getElementById("banner").selectedOptions[0].text;
-            const storeNumber = document.getElementById("storeNumber").value;
-            const severity = document.getElementById("severity").value;
-            const assignTo = document.getElementById("assignTo").value;
-            const department = document.getElementById("departmentGroup").style.display !== "none" ? document.getElementById("department").value : "N/A";
-            const status = document.getElementById("status").value;
-            const resolver = document.getElementById("resolver").value;
-            const description = document.getElementById("description").value;
-            const resolution = document.getElementById("resolution").value;
-            const currentTimestamp = new Date().toLocaleString();
+    // Define the guidance and troubleshooting steps for each issue
+    let noteContent = "";
+    if (issue === "Handheld Issue") {
+        noteContent = `When was the last time it worked?\nIs there an error message?\n\nTroubleshooting Guide:\n- Check the handheld battery.\n- Restart the handheld device.\n- Contact support if the issue persists.`;
+    } else if (issue === "Fuel Pump Down") {
+        noteContent = `When was the last time it worked?\nIs there an error message?\n\nTroubleshooting Guide:\n- Login to Kaseya and launch SMTools.\n- Check the Fuel Console for errors.\n- Ask the manager to switch off the breaker for Pump 1 and 2, then power it back on.`;
+    } else if (issue === "Password Access/Issue") {
+        noteContent = `When was the last time it worked?\nIs there an error message?\n\nTroubleshooting Guide:\n- Verify the user's credentials.\n- Reset the password if needed.\n- Confirm network connectivity.`;
+    } else if (issue === "Payments: Credit/Debit Issues") {
+        noteContent = `When was the last time it worked?\nIs there an error message?\n\nTroubleshooting Guide:\n- Check if the payment terminal is connected to the network.\n- Restart the terminal.\n- Contact the payment provider for assistance.`;
+    }
 
-            document.getElementById("timestamp").innerText = `Date & Time: ${currentTimestamp}`;
+    // Populate the "Note" textbox with the corresponding content
+    noteTextbox.value = noteContent;
+});
 
-            const ticketDetails = `Ticket Description: ${title}
+    // Copy ticket details to clipboard
+    function copyDetails() {
+        const title = document.getElementById("title").value;
+        const ticketNumber = document.getElementById("ticketNumber").value;
+        const banner = document.getElementById("banner").selectedOptions[0].text;
+        const storeNumber = document.getElementById("storeNumber").value;
+        const severity = document.getElementById("severity").value;
+        const assignTo = document.getElementById("assignTo").value;
+        const department = document.getElementById("departmentGroup").style.display !== "none" 
+            ? document.getElementById("department").value 
+            : "N/A";
+        const status = document.getElementById("status").value;
+        const resolver = document.getElementById("resolver").value;
+        const issue = document.getElementById("issue").selectedOptions[0].text;
+        const description = document.getElementById("description").value;
+        const resolution = document.getElementById("resolution").value;
+        const currentTimestamp = new Date().toLocaleString();
+
+        // Set the timestamp on the form
+        document.getElementById("timestamp").innerText = `Date & Time: ${currentTimestamp}`;
+
+        // Create the ticket details string
+        const ticketDetails = `Ticket Description: ${title}
 Ticket #: ${ticketNumber}
 Banner: ${banner}
 Store #: ${storeNumber}
@@ -239,23 +273,29 @@ Assign To: ${assignTo}
 Department: ${department}
 Status: ${status}
 IT Technician: ${resolver}
+Issue: ${issue}
 Note: ${description}
 Resolution: ${resolution}
 Date & Time: ${currentTimestamp}`;
 
-            navigator.clipboard.writeText(ticketDetails).then(() => {
-                alert("Ticket details (with timestamp) copied to clipboard!");
-            }).catch((err) => {
-                alert("Failed to copy details: " + err);
-            });
-        }
+        // Copy to clipboard
+        navigator.clipboard.writeText(ticketDetails).then(() => {
+            alert("Ticket details (with timestamp) copied to clipboard!");
+        }).catch((err) => {
+            alert("Failed to copy details: " + err);
+        });
+    }
 
-        // Clear the form
-        function clearForm() {
-            document.getElementById("ticketForm").reset();
-            document.getElementById("timestamp").innerText = "";
-            document.getElementById("departmentGroup").style.display = "none";
-        }
+    // Clear the form
+    function clearForm() {
+        // Reset all fields in the form
+        document.getElementById("ticketForm").reset();
+        // Clear timestamp text
+        document.getElementById("timestamp").innerText = "";
+        // Hide the Department group if shown
+        document.getElementById("departmentGroup").style.display = "none";
+    }
+
     </script>
 </body>
 </html>
