@@ -58,6 +58,16 @@
             box-sizing: border-box;
         }
 
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         .form-group textarea {
             resize: none;
             height: 80px;
@@ -105,6 +115,12 @@
         #departmentGroup {
             display: none;
         }
+
+        .alert {
+            color: red;
+            font-style: italic;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -118,12 +134,14 @@
 
         <div class="form-group">
             <label for="ticketNumber">Ticket #</label>
-            <input type="text" id="ticketNumber" placeholder="Enter ticket number">
+            <input type="text" id="ticketNumber" placeholder="Enter ticket number" oninput="validateNumber(this)">
+            <div class="alert" id="ticketNumberAlert">This entry can only contain numbers</div>
         </div>
 
         <div class="form-group">
             <label for="banner">Banner</label>
             <select id="banner">
+                <option value="--">--</option>
                 <option value="Cumberland Farms">Cumberland Farms (CF)</option>
                 <option value="Turkey Hill">Turkey Hill (TH)</option>
                 <option value="Certified Oil">Certified Oil (CO)</option>
@@ -141,12 +159,14 @@
 
         <div class="form-group">
             <label for="storeNumber">Store #</label>
-            <input type="text" id="storeNumber" placeholder="Enter store number">
+            <input type="text" id="storeNumber" placeholder="Enter store number" oninput="validateNumber(this)">
+            <div class="alert" id="storeNumberAlert">This entry can only contain numbers</div>
         </div>
 
         <div class="form-group">
             <label for="severity">SLA Priority Levels</label>
             <select id="severity">
+                <option value="--">--</option>
                 <option value="P1">Down Store (P1)</option>
                 <option value="P2">Emergency/Hypercare (P2)</option>
                 <option value="P3">Urgent (P3)</option>
@@ -157,6 +177,7 @@
         <div class="form-group">
             <label for="assignTo">Assign To</label>
             <select id="assignTo">
+                <option value="--">--</option>
                 <option value="EG IT Help Desk">EG IT Help Desk</option>
                 <option value="Transfer">Transfer</option>
             </select>
@@ -170,6 +191,7 @@
         <div class="form-group">
             <label for="status">Status</label>
             <select id="status">
+                <option value="--">--</option>
                 <option value="Open">Open</option>
                 <option value="InProgress">In Progress</option>
                 <option value="Closed">Closed/Complete</option>
@@ -185,10 +207,15 @@
         <div class="form-group">
             <label for="issue">Issue</label>
             <select id="issue">
-                <option value="Handheld Issue">Handheld Issue</option>
-                <option value="Fuel Pump Down">Fuel Pump Down</option>
-                <option value="Password Access/Issue">Password Access/Issue</option>
-                <option value="Payments: Credit/Debit Issues">Payments: Credit/Debit Issues</option>
+                <option value="--">--</option>
+                <option value="Password Reset/Unlock">Password Reset/Unlock</option>
+                <option value="Pinpad error">Pinpad error</option>
+                <option value="Register/POS is down">Register/POS is down</option>
+                <option value="Scanner not working">Scanner not working</option>
+                <option value="Printer not working">Printer not working</option>
+                <option value="Coin Dispenser unable to dispense">Coin Dispenser unable to dispense</option>
+                <option value="Island Card Reader (ICR) display error">Island Card Reader (ICR) display error</option>
+                <option value="Payment: Credit/Debit Issue">Payment: Credit/Debit Issue</option>
             </select>
         </div>
 
@@ -211,7 +238,7 @@
     </form>
 
     <script>
-            // Handle showing/hiding the Department field
+    // Handle showing/hiding the Department field
     document.getElementById("assignTo").addEventListener("change", function () {
         const assignToValue = this.value;
         const departmentGroup = document.getElementById("departmentGroup");
@@ -222,42 +249,47 @@
             departmentGroup.style.display = "none";
         }
     });
-document.getElementById("issue").addEventListener("change", function () {
-    const issue = this.value;
-    const noteTextbox = document.getElementById("description");
 
-    // Define the guidance and troubleshooting steps for each issue
-    let noteContent = "";
-    if (issue === "Handheld Issue") {
-        noteContent = `When was the last time it worked?\nIs there an error message?\n\nTroubleshooting Guide:\n- Check the handheld battery.\n- Restart the handheld device.\n- Contact support if the issue persists.`;
-    } else if (issue === "Fuel Pump Down") {
-        noteContent = `When was the last time it worked?\nIs there an error message?\n\nTroubleshooting Guide:\n- Login to Kaseya and launch SMTools.\n- Check the Fuel Console for errors.\n- Ask the manager to switch off the breaker for Pump 1 and 2, then power it back on.`;
-    } else if (issue === "Password Access/Issue") {
-        noteContent = `When was the last time it worked?\nIs there an error message?\n\nTroubleshooting Guide:\n- Verify the user's credentials.\n- Reset the password if needed.\n- Confirm network connectivity.`;
-    } else if (issue === "Payments: Credit/Debit Issues") {
-        noteContent = `When was the last time it worked?\nIs there an error message?\n\nTroubleshooting Guide:\n- Check if the payment terminal is connected to the network.\n- Restart the terminal.\n- Contact the payment provider for assistance.`;
+    document.getElementById("issue").addEventListener("change", function () {
+        const issue = this.value;
+        const noteTextbox = document.getElementById("description");
+
+        // Define the guidance and troubleshooting steps for each issue
+        let noteContent = `Name of caller:\nBest Callback #:\nWhich system/equipment is affected:\n\n`;
+
+        // Populate the "Note" textbox with the corresponding content
+        noteTextbox.value = noteContent;
+    });
+
+    // Validate numeric input and restrict to numbers only
+    function validateNumber(input) {
+        const value = input.value;
+        const alertId = input.id + "Alert";
+        const alertElement = document.getElementById(alertId);
+
+        if (/[^0-9]/.test(value)) {
+            alertElement.style.display = "block";
+            input.value = value.replace(/[^0-9]/g, '');
+        } else {
+            alertElement.style.display = "none";
+        }
     }
-
-    // Populate the "Note" textbox with the corresponding content
-    noteTextbox.value = noteContent;
-});
 
     // Copy ticket details to clipboard
     function copyDetails() {
         const title = document.getElementById("title").value;
-        const ticketNumber = document.getElementById("ticketNumber").value;
-        const banner = document.getElementById("banner").selectedOptions[0].text;
-        const storeNumber = document.getElementById("storeNumber").value;
-        const severity = document.getElementById("severity").value;
-        const assignTo = document.getElementById("assignTo").value;
-        const department = document.getElementById("departmentGroup").style.display !== "none" 
-            ? document.getElementById("department").value 
-            : "N/A";
-        const status = document.getElementById("status").value;
-        const resolver = document.getElementById("resolver").value;
-        const issue = document.getElementById("issue").selectedOptions[0].text;
-        const description = document.getElementById("description").value;
-        const resolution = document.getElementById("resolution").value;
+        const ticketNumber = document.getElementById("ticketNumber").value || "";
+        const banner = document.getElementById("banner").selectedOptions[0].text || "--";
+        const storeNumber = document.getElementById("storeNumber").value || "";
+        const severity = document.getElementById("severity").value || "--";
+        const assignTo = document.getElementById("assignTo").value || "--";
+        const departmentGroup = document.getElementById("departmentGroup").style.display !== "none";
+        const department = departmentGroup ? document.getElementById("department").value : "";
+        const status = document.getElementById("status").value || "--";
+        const resolver = document.getElementById("resolver").value || "";
+        const issue = document.getElementById("issue").selectedOptions[0].text || "--";
+        const description = document.getElementById("description").value || "";
+        const resolution = document.getElementById("resolution").value || "";
         const currentTimestamp = new Date().toLocaleString();
 
         // Set the timestamp on the form
@@ -270,12 +302,11 @@ Banner: ${banner}
 Store #: ${storeNumber}
 SLA Priority Level: ${severity}
 Assign To: ${assignTo}
-Department: ${department}
-Status: ${status}
+${(departmentGroup && department) ? `Department: ${department}\n` : ''}Status: ${status}
 IT Technician: ${resolver}
 Issue: ${issue}
-Note: ${description}
-Resolution: ${resolution}
+${description ? `Note:\n${description}` : 'Note:'}
+${resolution ? `Resolution:\n${resolution}` : 'Resolution:'}
 Date & Time: ${currentTimestamp}`;
 
         // Copy to clipboard
@@ -294,6 +325,9 @@ Date & Time: ${currentTimestamp}`;
         document.getElementById("timestamp").innerText = "";
         // Hide the Department group if shown
         document.getElementById("departmentGroup").style.display = "none";
+        // Hide alerts
+        document.getElementById("ticketNumberAlert").style.display = "none";
+        document.getElementById("storeNumberAlert").style.display = "none";
     }
 
     </script>
