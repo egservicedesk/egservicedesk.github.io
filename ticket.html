@@ -21,7 +21,7 @@
         .ticket-form {
             width: 90%;
             max-width: 600px;
-            padding: 10px;
+            padding: 20px;
             background: rgba(255, 255, 255, 0.8);
             border: 2px solid rgba(0, 0, 0, 0.5);
             border-radius: 8px;
@@ -35,11 +35,11 @@
         }
         .ticket-form h2 {
             margin: 0;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             text-align: center;
         }
         .form-group {
-            margin-bottom: 6px;
+            margin-bottom: 12px;
         }
         .form-group label {
             display: block;
@@ -116,8 +116,41 @@
             color: white;
             font-weight: bold;
             position: absolute;
-            bottom: 0px;
+            bottom: 2px;
             width: 100%;
+        }
+
+        /* Responsive design for phones */
+        @media (max-width: 768px) {
+            .ticket-form {
+                width: 100%;
+                max-width: none;
+                height: auto;
+                top: 0;
+                left: 0;
+                transform: none;
+                position: relative;
+                box-shadow: none;
+                border: none;
+                padding: 10px;
+            }
+            body {
+                height: auto;
+                display: block;
+                padding: 10px;
+            }
+        }
+
+        /* Responsive design for tablets */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .ticket-form {
+                width: 80%;
+                max-width: none;
+                height: auto;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
         }
     </style>
 </head>
@@ -389,7 +422,7 @@
             // Reset all fields in the form
             document.getElementById("ticketForm").reset();
             console.log("Form reset");
-            // Clear timestamp text
+           // Clear timestamp text
             document.getElementById("timestamp").innerText = "";
             console.log("Timestamp cleared");
 
