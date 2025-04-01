@@ -119,8 +119,11 @@
             bottom: 0.5px;
             width: 100%;
         }
-
-        /* Responsive design for phones */
+        .disabled-dropdown {
+            background-color: gray;
+            color: #fff;
+            pointer-events: none;
+        }
         @media (max-width: 768px) {
             .ticket-form {
                 width: 100%;
@@ -140,8 +143,6 @@
                 padding: 10px;
             }
         }
-
-        /* Responsive design for tablets */
         @media (min-width: 768px) and (max-width: 1024px) {
             .ticket-form {
                 width: 80%;
@@ -233,25 +234,82 @@
             <input type="text" id="resolver" placeholder="Enter IT Technician name">
         </div>
         <div class="form-group">
-            <label for="issue">Issue</label>
-            <select id="issue">
+            <label for="issueCategory">Issue Category</label>
+            <select id="issueCategory">
                 <option value="--">--</option>
-                <option value="Password Reset/Unlock">Password Reset/Unlock</option>
-                <option value="Pinpad error">Pinpad error</option>
-                <option value="Register/POS is down">Register/POS is down</option>
-                <option value="Scanner not working">Scanner not working</option>
-                <option value="Printer not working">Printer not working</option>
-                <option value="Coin Dispenser unable to dispense">Coin Dispenser unable to dispense</option>
-                <option value="Island Card Reader (ICR) display error">Island Card Reader (ICR) display error</option>
-                <option value="Payment: Credit/Debit Issue">Payment: Credit/Debit Issue</option>
-                <option value="Payment: SmartPay Issue">Payment: SmartPay Issue</option>
-                <option value="Payment: Gift Card Issue">Payment: Gift Card Issue</option>
-                <option value="PDI Handheld Not Communicating/Not Working">PDI Handheld Not Communicating/Not Working</option>
+                <option value="Password Reset/Topics">Password Reset/Topics</option>
+                <option value="POS: Software(Storepoint)">POS: Software(Storepoint)</option>
+                <option value="POS: PINpads">POS: PINpads</option>
+                <option value="POS: Down">POS: Down</option>
+                <option value="POS: Scanner">POS: Scanner</option>
+                <option value="POS: Other Topics">POS: Other Topics</option>
+                <option value="POS: Printer">POS: Printer</option>
+                <option value="POS: Errors">POS: Errors</option>
+                <option value="POS: Coin Dispenser">POS: Coin Dispenser</option>
+                <option value="POS: Cash Drawer">POS: Cash Drawer</option>
+                <option value="POS: Registers">POS: Registers</option>
+                <option value="POS: (Radiant)">POS: (Radiant)</option>
+                <option value="POS: Hardware(Storepoint)">POS: Hardware(Storepoint)</option>
+                <option value="POS: Printers (Radiant)">POS: Printers (Radiant)</option>
+                <option value="BOS: StorePoint">BOS: StorePoint</option>
+                <option value="BOS: Other Topics">BOS: Other Topics</option>
+                <option value="Printer: Shelf Labels">Printer: Shelf Labels</option>
+                <option value="Printer: Office Printer">Printer: Office Printer</option>
+                <option value="Printer/Scanner">Printer/Scanner</option>
+                <option value="Printers(WMS)">Printers(WMS)</option>
+                <option value="BOS/SiteController">BOS/SiteController</option>
+                <option value="Computer Configuration">Computer Configuration</option>
+                <option value="Windows">Windows</option>
+                <option value="Xerox Printer Information">Xerox Printer Information</option>
+                <option value="Back Office POS(Radiant)">Back Office POS(Radiant)</option>
+                <option value="BOS: Software(Storepoint)">BOS: Software(Storepoint)</option>
+                <option value="BOS: Hardware(Storepoint)">BOS: Hardware(Storepoint)</option>
+                <option value="Electronic Payments: Loyalty">Electronic Payments: Loyalty</option>
+                <option value="Electronic Payments: Credit/Debit Issues">Electronic Payments: Credit/Debit Issues</option>
+                <option value="Electronic Payments: Other Topics">Electronic Payments: Other Topics</option>
+                <option value="Electronic Payments: Gift Cards">Electronic Payments: Gift Cards</option>
+                <option value="Electronic Payments: Individual Card Type Issues">Electronic Payments: Individual Card Type Issues</option>
+                <option value="Decline Codes">Decline Codes</option>
+                <option value="Credit/Debit (Radiant)">Credit/Debit (Radiant)</option>
+                <option value="Electronic Tenders (Storepoint)">Electronic Tenders (Storepoint)</option>
+                <option value="Loyalty (Radiant)">Loyalty (Radiant)</option>
+                <option value="Network/Communication: Other Topics">Network/Communication: Other Topics</option>
+                <option value="Network/Communication">Network/Communication</option>
+                <option value="Phone Lines: Phone Issues">Phone Lines: Phone Issues</option>
+                <option value="Telecomm">Telecomm</option>
+                <option value="Fuel: All Fuel Down">Fuel: All Fuel Down</option>
+                <option value="Fuel: Other Topics">Fuel: Other Topics</option>
+                <option value="Fuel: Price Changes">Fuel: Price Changes</option>
+                <option value="Fuel: ICR's Down">Fuel: ICR's Down</option>
+                <option value="Fuel: Pump Issues">Fuel: Pump Issues</option>
+                <option value="Fuel: ATG / Veeder Root">Fuel: ATG / Veeder Root</option>
+                <option value="Fuel: VLINX">Fuel: VLINX</option>
+                <option value="Gas Dispenser Problems (Storepoint)">Gas Dispenser Problems (Storepoint)</option>
+                <option value="Gas Dispenser Problems (Radiant)">Gas Dispenser Problems (Radiant)</option>
+                <option value="Network (Radiant)">Network (Radiant)</option>
+                <option value="PDI: Handhelds">PDI: Handhelds</option>
+                <option value="PDI: EOD Import Fails">PDI: EOD Import Fails</option>
+                <option value="PDI: Paperwork Issues">PDI: Paperwork Issues</option>
+                <option value="PDI: Server Issues">PDI: Server Issues</option>
+                <option value="PDI: Ordering">PDI: Ordering</option>
+                <option value="PDI: Other Topics">PDI: Other Topics</option>
+                <option value="End of Shift Errors">End of Shift Errors</option>
+                <option value="EOD Troubleshooting Compendium - (Radiant)">EOD Troubleshooting Compendium - (Radiant)</option>
+                <option value="Pricebook">Pricebook</option>
+                <option value="PDI Paperwork (Radiant)">PDI Paperwork (Radiant)</option>
+                <option value="PDI Handheld (Radiant)">PDI Handheld (Radiant)</option>
+                <option value="PDI (Storepoint)">PDI (Storepoint)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="kbReference">KB Reference</label>
+            <select id="kbReference" class="disabled-dropdown" disabled>
+                <option value="--">--</option>
             </select>
         </div>
         <div class="form-group">
             <label for="description">Note</label>
-            <textarea id="description" placeholder="Enter note"></textarea>
+            <textarea id="description" placeholder="Enter note" data-user-input=""></textarea>
         </div>
         <div class="form-group">
             <label for="resolution">Resolution</label>
@@ -270,173 +328,251 @@
     </form>
     <div class="footer">© 2025 Copyright Accenture Project EG-America</div>
     <script>
-        // Handle showing/hiding the Department field
-        document.getElementById("assignTo").addEventListener("change", function () {
-            const assignToValue = this.value;
-            const departmentGroup = document.getElementById("departmentGroup");
+    // Handle showing/hiding the Department field
+    document.getElementById("assignTo").addEventListener("change", function () {
+        const assignToValue = this.value;
+        const departmentGroup = document.getElementById("departmentGroup");
 
-            if (assignToValue === "Transfer") {
-                departmentGroup.style.display = "block";
-            } else {
-                departmentGroup.style.display = "none";
-            }
-        });
+        if (assignToValue === "Transfer") {
+            departmentGroup.style.display = "block";
+        } else {
+            departmentGroup.style.display = "none";
+        }
+    });
 
-        // Auto adjust "Note" and "Resolution" textarea height
+    // Auto adjust "Note" and "Resolution" textarea height
+    const noteTextbox = document.getElementById("description");
+    const resolutionTextbox = document.getElementById("resolution");
+
+    function autoAdjustHeight(textbox) {
+        textbox.style.height = "auto";
+        textbox.style.height = textbox.scrollHeight + "px";
+    }
+
+    noteTextbox.addEventListener("input", function() {
+        noteTextbox.dataset.userInput = this.value;
+        autoAdjustHeight(this);
+    });
+
+    resolutionTextbox.addEventListener("input", function() {
+        autoAdjustHeight(this);
+    });
+
+    // Populate KB Reference dropdown based on Issue Category selection
+    function populateKBReferenceDropdown(category) {
+        const kbReferenceDropdown = document.getElementById("kbReference");
+        kbReferenceDropdown.innerHTML = '<option value="--">--</option>'; // Reset options
+
+        const kbReferences = {
+            "Password Reset/Topics": [
+                "Connect to Corporate Password Reset",
+                "Network Passwords",
+                "PDI Password Resets",
+                "Reset Store E-mail Passwords in AD",
+                "StorePoint Password Reset",
+                "Radiant Windows Password Resets",
+                "User Can’t Access UKG Pro from Home",
+                "Reset Corporate User Passwords",
+                "Service Channel Logons"
+            ],
+            "POS: PINpads": [
+                "M400 PINpad Installation and Setup",
+                "M400 PINpad Ghost Touch or Bad Forms",
+                "Disable Cash Back on PINpad",
+                "StorePoint PINpad not Communicating",
+                "StorePoint EMV Troubleshooting",
+                "Verifone PINpad Overview",
+                "Rebooting Verifone MX915 PINpads",
+                "Radiant - EMV PINpad Troubleshooting",
+                "StorePoint EMV Troubleshooting Tools",
+                "Chip Card Diagnostic on PINpad",
+                "Verifone PINpad Down Date/Time Fix"
+            ]
+            // Add other categories and their KB references here if needed
+        };
+
+        if (kbReferences[category]) {
+            kbReferences[category].forEach(kbReference => {
+                const option = document.createElement('option');
+                option.value = kbReference;
+                option.text = kbReference;
+                kbReferenceDropdown.appendChild(option);
+            });
+        }
+    }
+
+    // Handle Issue Category change
+    document.getElementById("issueCategory").addEventListener("change", function () {
+        const issueCategory = this.value;
+        const kbReferenceDropdown = document.getElementById("kbReference");
         const noteTextbox = document.getElementById("description");
-        const resolutionTextbox = document.getElementById("resolution");
 
-        function autoAdjustHeight(textbox) {
-            textbox.style.height = "auto";
-            textbox.style.height = textbox.scrollHeight + "px";
-        }
-
-        noteTextbox.addEventListener("input", function() {
-            autoAdjustHeight(this);
-        });
-
-        resolutionTextbox.addEventListener("input", function() {
-            autoAdjustHeight(this);
-        });
-
-        document.getElementById("issue").addEventListener("change", function () {
-            const issue = this.value;
-            const originalContent = noteTextbox.dataset.original || '';
-            const additionalContent = `Name:\nEmployee or Manager:\nPhone #:\nAvailable working hours:\nAny related/existing ticket:\nWhich system/equipment is affected:\nWhat specific error message is being displayed:\nAny troubleshooting steps already performed:\nIs this issue recurring or a one-time occurrence:\nIs any other system/equipment affected:\n`;
-
-            if (issue === "--") {
-                // Clear only the specified content and retain manually typed text
-                noteTextbox.value = originalContent.replace(additionalContent, '').trim();
-            } else {
-                // Check if the additional content is already present
-                if (!noteTextbox.value.includes(additionalContent)) {
-                    noteTextbox.value = originalContent + '\n' + additionalContent;
-                }
+        if (issueCategory === "--") {
+            // Reset KB Reference dropdown and Note textbox if both are "--"
+            kbReferenceDropdown.disabled = true;
+            kbReferenceDropdown.classList.add("disabled-dropdown");
+            kbReferenceDropdown.innerHTML = '<option value="--">--</option>';
+            if (kbReferenceDropdown.value === "--") {
+                noteTextbox.value = "";
+                noteTextbox.dataset.userInput = "";
+                autoAdjustHeight(noteTextbox);
             }
-            autoAdjustHeight(noteTextbox);
-        });
+        } else {
+            kbReferenceDropdown.disabled = false;
+            kbReferenceDropdown.classList.remove("disabled-dropdown");
+            populateKBReferenceDropdown(issueCategory);
+        }
+    });
 
-        // Save the original content when the user types
-        noteTextbox.addEventListener("input", function() {
-            noteTextbox.dataset.original = this.value.replace(`Name:\nEmployee or Manager:\nPhone #:\nAvailable working hours:\nAny related/existing ticket:\nWhich system/equipment is affected:\nWhat specific error message is being displayed:\nAny troubleshooting steps already performed:\nIs this issue recurring or a one-time occurrence:\nIs any other system/equipment affected:\n`, '');
-        });
+    // Content to populate in the Note textbox
+    const noteContent = `
+Employee or Manager:
+Phone #:
+Available working hours:
+Any related/existing ticket:
+Which system/equipment is affected:
+What specific error message or issue are you experiencing?
+Have you tried any troubleshooting steps? If so, what are they?
+Any additional details or comments:`;
 
-        // Validate numeric input and restrict to numbers only
-        function validateNumber(input) {
-            const value = input.value;
-            const alertId = input.id + "Alert";
-            const alertElement = document.getElementById(alertId);
+    // Handle KB Reference change and update the Note field
+    document.getElementById("kbReference").addEventListener("change", function () {
+        const kbReference = this.value;
+        const issueCategory = document.getElementById("issueCategory").value;
+        const noteTextbox = document.getElementById("description");
 
-            if (/[^0-9]/.test(value)) {
-                alertElement.style.display = "block";
-                setTimeout(() => {
-                    alertElement.style.display = "none";
-                }, 1500);
-                input.value = value.replace(/[^0-9]/g, '');
-            } else {
+        if (kbReference === "--" || issueCategory === "--") {
+            // Reset the Note textbox if either dropdown is set to "--"
+            noteTextbox.value = "";
+            noteTextbox.dataset.userInput = "";
+        } else {
+            // Preserve manually typed text
+            const userInput = noteTextbox.dataset.userInput || "";
+            if (!userInput.includes(noteContent.trim())) {
+                noteTextbox.value = userInput + noteContent.trim();
+            }
+        }
+        autoAdjustHeight(noteTextbox);
+    });
+
+    // Validate numeric input and restrict to numbers only
+    function validateNumber(input) {
+        const value = input.value;
+        const alertId = input.id + "Alert";
+        const alertElement = document.getElementById(alertId);
+
+        if (/[^0-9]/.test(value)) {
+            alertElement.style.display = "block";
+            setTimeout(() => {
                 alertElement.style.display = "none";
-            }
+            }, 1500);
+            input.value = value.replace(/[^0-9]/g, '');
+        } else {
+            alertElement.style.display = "none";
         }
+    }
 
-        // Validate URL input and restrict to https:// or http:// URLs only
-        function validateURL(input) {
-            const value = input.value;
-            const alertElement = document.getElementById("kbArticleAlert");
+    // Validate URL input and restrict to https:// or http:// URLs only
+    function validateURL(input) {
+        const value = input.value;
+        const alertElement = document.getElementById("kbArticleAlert");
 
-            const isValidUrl = /^(https?:\/\/).+$/.test(value);
-            if (!isValidUrl) {
-                alertElement.style.display = "block";
-                setTimeout(() => {
-                    alertElement.style.display = "none";
-                }, 3000);
-                input.value = value.replace(/^(?!https?:\/\/).*/, '');
-            } else {
+        const isValidUrl = /^(https?:\/\/).+$/.test(value);
+        if (!isValidUrl) {
+            alertElement.style.display = "block";
+            setTimeout(() => {
                 alertElement.style.display = "none";
-            }
+            }, 3000);
+            input.value = value.replace(/^(?!https?:\/\/).*/, '');
+        } else {
+            alertElement.style.display = "none";
+        }
+    }
+
+    // Copy ticket details to clipboard
+    function copyDetails() {
+        const title = document.getElementById("title").value;
+        const ticketNumber = document.getElementById("ticketNumber").value || "";
+        const banner = document.getElementById("banner").selectedOptions[0].text || "--";
+        const storeNumber = document.getElementById("storeNumber").value || "";
+        const severity = document.getElementById("severity").value || "--";
+        const assignTo = document.getElementById("assignTo").value || "--";
+        const departmentGroup = document.getElementById("departmentGroup").style.display !== "none";
+        const department = departmentGroup ? document.getElementById("department").value : "";
+        const status = document.getElementById("status").value || "--";
+        const resolver = document.getElementById("resolver").value || "";
+        const issueCategory = document.getElementById("issueCategory").selectedOptions[0].text || "--";
+        const kbReference = document.getElementById("kbReference").selectedOptions[0].text || "--";
+        const description = document.getElementById("description").value || "";
+        const resolution = document.getElementById("resolution").value || "No Resolution Yet";
+        const kbArticle = document.getElementById("kbArticle").value || "No Article Available"; // Default message here
+        const currentTimestamp = new Date().toLocaleString();
+
+        // Set the timestamp on the form
+        document.getElementById("timestamp").innerText = `Date & Time: ${currentTimestamp}`;
+
+        // Create the ticket details string with HTML tags for formatting
+        const ticketDetails = `
+        <div><strong>Ticket Description:</strong> ${title}</div>
+        <div><strong>Ticket #:</strong> ${ticketNumber}</div>
+        <div><strong>Banner:</strong> ${banner}</div>
+        <div><strong>Store #:</strong> ${storeNumber}</div>
+        <div><strong>SLA Priority Level:</strong> ${severity}</div>
+        <div><strong>Assign To:</strong> ${assignTo}</div>
+        ${(departmentGroup && department) ? `<div><strong>Department:</strong> ${department}</div>` : ''}
+        <div><strong>Status:</strong> ${status}</div>
+        <div><strong>IT Technician:</strong> ${resolver}</div>
+        <div><strong>Issue Category:</strong> ${issueCategory}</div>
+        <div><strong>KB Reference:</strong> ${kbReference}</div>
+        ${description ? `<div><strong>Note:</strong><br>${description.replace(/\n/g, '<br>')}</div>` : '<div><strong>Note:</strong></div>'}
+        <div><strong>Resolution:</strong><br>${resolution.replace(/\n/g, '<br>')}</div>
+        <div><strong>KB Article/URL:</strong><br>${kbArticle}</div>
+        <div><strong><u><i>For Internal use ONLY.</i></u></strong></div>
+        <div><strong>Date & Time:</strong> ${currentTimestamp}</div>`;
+
+        // Create a temporary element to hold the HTML content
+        const tempElem = document.createElement('div');
+        tempElem.innerHTML = ticketDetails;
+
+        // Copy the contents of the temporary element to the clipboard
+        document.body.appendChild(tempElem);
+        const range = document.createRange();
+        range.selectNode(tempElem);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+            document.execCommand('copy');
+            alert("Ticket details (with timestamp) copied to clipboard!");
+        } catch (err) {
+            alert("Failed to copy details: " + err);
         }
 
-        // Copy ticket details to clipboard
-        function copyDetails() {
-            const title = document.getElementById("title").value;
-            const ticketNumber = document.getElementById("ticketNumber").value || "";
-            const banner = document.getElementById("banner").selectedOptions[0].text || "--";
-            const storeNumber = document.getElementById("storeNumber").value || "";
-            const severity = document.getElementById("severity").value || "--";
-            const assignTo = document.getElementById("assignTo").value || "--";
-            const departmentGroup = document.getElementById("departmentGroup").style.display !== "none";
-            const department = departmentGroup ? document.getElementById("department").value : "";
-            const status = document.getElementById("status").value || "--";
-            const resolver = document.getElementById("resolver").value || "";
-            const issue = document.getElementById("issue").selectedOptions[0].text || "--";
-            const description = document.getElementById("description").value || "";
-            const resolution = document.getElementById("resolution").value || "No Resolution Yet";
-            const kbArticle = document.getElementById("kbArticle").value || "No Article Available"; // Default message here
-            const currentTimestamp = new Date().toLocaleString();
+        // Clean up
+        document.body.removeChild(tempElem);
+        window.getSelection().removeAllRanges();
+    }
 
-            // Set the timestamp on the form
-            document.getElementById("timestamp").innerText = `Date & Time: ${currentTimestamp}`;
+    // Clear the form
+    function clearForm() {
+        // Reset all fields in the form
+        document.getElementById("ticketForm").reset();
+        console.log("Form reset");
+        // Clear timestamp text
+        document.getElementById("timestamp").innerText = "";
+        console.log("Timestamp cleared");
 
-            // Create the ticket details string with HTML tags for formatting
-            const ticketDetails = `
-            <div><strong>Ticket Description:</strong> ${title}</div>
-            <div><strong>Ticket #:</strong> ${ticketNumber}</div>
-            <div><strong>Banner:</strong> ${banner}</div>
-            <div><strong>Store #:</strong> ${storeNumber}</div>
-            <div><strong>SLA Priority Level:</strong> ${severity}</div>
-            <div><strong>Assign To:</strong> ${assignTo}</div>
-            ${(departmentGroup && department) ? `<div><strong>Department:</strong> ${department}</div>` : ''}
-            <div><strong>Status:</strong> ${status}</div>
-            <div><strong>IT Technician:</strong> ${resolver}</div>
-            <div><strong>Issue:</strong> ${issue}</div>
-            ${description ? `<div><strong>Note:</strong><br>${description.replace(/\n/g, '<br>')}</div>` : '<div><strong>Note:</strong></div>'}
-            <div><strong>Resolution:</strong><br>${resolution.replace(/\n/g, '<br>')}</div>
-            <div><strong>KB Article/URL:</strong><br>${kbArticle}</div>
-            <div><strong><u><i>For Internal use ONLY.</i></u></strong></div>
-            <div><strong>Date & Time:</strong> ${currentTimestamp}</div>`;
+        // Hide the Department group if shown
+        document.getElementById("departmentGroup").style.display = "none";
+        console.log("Department group hidden");
 
-            // Create a temporary element to hold the HTML content
-            const tempElem = document.createElement('div');
-            tempElem.innerHTML = ticketDetails;
+        // Reset "Note" and "Resolution" textboxes to original size
+        document.getElementById("description").style.height = "80px";
+        document.getElementById("resolution").style.height = "80px";
 
-            // Copy the contents of the temporary element to the clipboard
-            document.body.appendChild(tempElem);
-            const range = document.createRange();
-            range.selectNode(tempElem);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-
-            try {
-                document.execCommand('copy');
-                alert("Ticket details (with timestamp) copied to clipboard!");
-            } catch (err) {
-                alert("Failed to copy details: " + err);
-            }
-
-            // Clean up
-            document.body.removeChild(tempElem);
-            window.getSelection().removeAllRanges();
-        }
-
-        // Clear the form
-        function clearForm() {
-            // Reset all fields in the form
-            document.getElementById("ticketForm").reset();
-            console.log("Form reset");
-           // Clear timestamp text
-            document.getElementById("timestamp").innerText = "";
-            console.log("Timestamp cleared");
-
-            // Hide the Department group if shown
-            document.getElementById("departmentGroup").style.display = "none";
-            console.log("Department group hidden");
-
-            // Reset "Note" and "Resolution" textboxes to original size
-            document.getElementById("description").style.height = "80px";
-            document.getElementById("resolution").style.height = "80px";
-
-            // Clear original content data
-            noteTextbox.dataset.original = "";
-        }
-    </script>
+        // Clear user input data
+        noteTextbox.dataset.userInput = "";
+    }
+</script>
 </body>
 </html>
