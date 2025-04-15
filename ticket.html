@@ -234,6 +234,20 @@
             <input type="text" id="resolver" placeholder="Enter IT Technician name">
         </div>
         <div class="form-group">
+            <label for="area">Area</label>
+            <select id="area">
+                <option value="--">--</option>
+                <option value="StorePoint">StorePoint</option>
+                <option value="Radiant">Radiant</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="equipment">Equipment</label>
+            <select id="equipment">
+                <option value="--">--</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="issueCategory">Issue Category</label>
             <select id="issueCategory">
                 <option value="--">--</option>
@@ -381,7 +395,7 @@
                 "Disable Cash Back on PINpad",
                 "StorePoint PINpad not Communicating",
                 "StorePoint EMV Troubleshooting",
-                "Verifone PINpad Overview",
+                                "Verifone PINpad Overview",
                 "Rebooting Verifone MX915 PINpads",
                 "Radiant - EMV PINpad Troubleshooting",
                 "StorePoint EMV Troubleshooting Tools",
@@ -489,6 +503,84 @@ Any additional details or comments:`;
         }
     }
 
+    // Populate Equipment dropdown based on Area selection
+    function populateEquipmentDropdown(area) {
+        const equipmentDropdown = document.getElementById("equipment");
+        equipmentDropdown.innerHTML = '<option value="--">--</option>'; // Reset options
+
+        const equipmentOptions = {
+            "StorePoint": [
+                "BOS HARDWARE",
+                "BOS SOFTWARE",
+                "BRINKS/TIDEL SAFE",
+                "CAR WASH",
+                "COMMUNICATION",
+                "DIGITAL GAS PRICE SIGN",
+                "DIGITAL MENU BOARD",
+                "DIGITAL SALE SIGN",
+                "ELECTRONIC TENDERS",
+                "GAS DISPENSER PROBLEMS",
+                "HTO TERMINALS",
+                "LABEL MAKER",
+                "LOYALTY",
+                "MONEY ORDER MACHINE",
+                "NON-IT INFORMATION REQUEST",
+                "OTHER SYSTEMS",
+                "PASSWORD RESETS",
+                "PDI",
+                "PDI HANDHELD",
+                "PDI PAPERWORK",
+                "PHONELINES",
+                "POS HARDWARE",
+                "POS HARDWARE - SELF CHECKOUT",
+                "POS SOFTWARE",
+                "POWER PROBLEMS",
+                "SKIP CO",
+                "STORE MUSIC SYSTEM-AIM",
+                "TABLETS",
+                "TEAMMATE ASSISTANCE",
+                "TITAN"
+            ],
+            "Radiant": [
+                "EG – BACK OFFICE PC",
+                "EG – CARWASH",
+                "EG – CREDIT/DEBIT",
+                "EG – DIGITAL MENU BOARD",
+                "EG – DIGITAL SALE SIGN",
+                "EG – GAS DISPENSER PROBLEMS",
+                "EG – GIFT CARDS",
+                "EG – LOYALTY",
+                "EG – NETWORK",
+                "EG – NON-IT INFORMATION REQUEST",
+                "EG – PASSWORD RESETS",
+                "EG – PDI HANDHELD",
+                "EG – PDI PAPERWORK",
+                "EG – PHONE LINE",
+                "EG – POS",
+                "EG – POWER PROBLEMS",
+                "EG – PRICEBOOK",
+                "EG – PRICEBOOK (FRANCHISEE ONLY)",
+                "EG – PRINTERS",
+                "EG – WESTERN UNION"
+            ]
+        };
+
+        if (equipmentOptions[area]) {
+            equipmentOptions[area].forEach(equipment => {
+                const option = document.createElement('option');
+                option.value = equipment;
+                option.text = equipment;
+                equipmentDropdown.appendChild(option);
+            });
+        }
+    }
+
+    // Handle Area change
+    document.getElementById("area").addEventListener("change", function () {
+        const area = this.value;
+        populateEquipmentDropdown(area);
+    });
+
     // Copy ticket details to clipboard
     function copyDetails() {
         const title = document.getElementById("title").value;
@@ -501,6 +593,8 @@ Any additional details or comments:`;
         const department = departmentGroup ? document.getElementById("department").value : "";
         const status = document.getElementById("status").value || "--";
         const resolver = document.getElementById("resolver").value || "";
+        const area = document.getElementById("area").selectedOptions[0].text || "--";
+        const equipment = document.getElementById("equipment").selectedOptions[0].text || "--";
         const issueCategory = document.getElementById("issueCategory").selectedOptions[0].text || "--";
         const kbReference = document.getElementById("kbReference").selectedOptions[0].text || "--";
         const description = document.getElementById("description").value || "";
@@ -522,6 +616,8 @@ Any additional details or comments:`;
         ${(departmentGroup && department) ? `<div><strong>Department:</strong> ${department}</div>` : ''}
         <div><strong>Status:</strong> ${status}</div>
         <div><strong>IT Technician:</strong> ${resolver}</div>
+        <div><strong>Area:</strong> ${area}</div>
+        <div><strong>Equipment:</strong> ${equipment}</div>
         <div><strong>Issue Category:</strong> ${issueCategory}</div>
         <div><strong>KB Reference:</strong> ${kbReference}</div>
         ${description ? `<div><strong>Note:</strong><br>${description.replace(/\n/g, '<br>')}</div>` : '<div><strong>Note:</strong></div>'}
