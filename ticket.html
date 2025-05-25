@@ -103,9 +103,6 @@
             font-weight: bold;
             color: #000;
         }
-        #departmentGroup {
-            display: none;
-        }
         .alert {
             color: red;
             font-style: italic;
@@ -118,11 +115,6 @@
             position: absolute;
             bottom: 0.5px;
             width: 100%;
-        }
-        .disabled-dropdown {
-            background-color: gray;
-            color: #fff;
-            pointer-events: none;
         }
         @media (max-width: 768px) {
             .ticket-form {
@@ -208,37 +200,62 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="assignTo">Assign To</label>
-            <select id="assignTo">
-                <option value="--">--</option>
-                <option value="EG IT Help Desk">EG IT Help Desk</option>
-                <option value="Transfer">Transfer</option>
-            </select>
-        </div>
-        <div class="form-group" id="departmentGroup">
-            <label for="department">Department</label>
-            <input type="text" id="department" placeholder="Enter department">
-        </div>
-        <div class="form-group">
             <label for="status">Status</label>
             <select id="status">
                 <option value="--">--</option>
-                <option value="Open">Open</option>
-                <option value="InProgress">In Progress</option>
-                <option value="Closed">Closed/Complete</option>
-                <option value="FollowUp">Follow up</option>
+                <option value="OPEN">OPEN</option>
+                <option value="OPEN/DECLINED">OPEN/DECLINED</option>
+                <option value="IN PROGRESS">IN PROGRESS</option>
+                <option value="IN PROGRESS/DAMAGED ORDER">IN PROGRESS/DAMAGED ORDER</option>
+                <option value="IN PROGRESS/DISPATCH CONFIRMED">IN PROGRESS/DISPATCH CONFIRMED</option>
+                <option value="IN PROGRESS/IN ROUTE">IN PROGRESS/IN ROUTE</option>
+                <option value="IN PROGRESS/INCOMPLETE">IN PROGRESS/INCOMPLETE</option>
+                <option value="IN PROGRESS/ON SITE">IN PROGRESS/ON SITE</option>
+                <option value="IN PROGRESS/ORDER NOT RECEIVED">IN PROGRESS/ORDER NOT RECEIVED</option>
+                <option value="IN PROGRESS/ORDER SHIPPED">IN PROGRESS/ORDER SHIPPED</option>
+                <option value="IN PROGRESS/PARTIAL ORDER">IN PROGRESS/PARTIAL ORDER</option>
+                <option value="IN PROGRESS/PARTS ON ORDER">IN PROGRESS/PARTS ON ORDER</option>
+                <option value="IN PROGRESS/PARTS ON SITE">IN PROGRESS/PARTS ON SITE</option>
+                <option value="IN PROGRESS/PARTS ORDER CONFIRMED">IN PROGRESS/PARTS ORDER CONFIRMED</option>
+                <option value="IN PROGRESS/POSSIBLE DUPLICATE CIWO">IN PROGRESS/POSSIBLE DUPLICATE CIWO</option>
+                <option value="IN PROGRESS/PROPOSAL APPROVED">IN PROGRESS/PROPOSAL APPROVED</option>
+                <option value="IN PROGRESS/TEMPORARY FIX">IN PROGRESS/TEMPORARY FIX</option>
+                <option value="IN PROGRESS/UNSATISFACTORY">IN PROGRESS/UNSATISFACTORY</option>
+                <option value="IN PROGRESS/VALIDATION REQUIRED">IN PROGRESS/VALIDATION REQUIRED</option>
+                <option value="IN PROGRESS/WAITING FOR APPROVAL">IN PROGRESS/WAITING FOR APPROVAL</option>
+                <option value="IN PROGRESS/WAITING FOR LINKED WO">IN PROGRESS/WAITING FOR LINKED WO</option>
+                <option value="IN PROGRESS/WAITING FOR MORE INFORMATION">IN PROGRESS/WAITING FOR MORE INFORMATION</option>
+                <option value="IN PROGRESS/WAITING FOR QUOTE">IN PROGRESS/WAITING FOR QUOTE</option>
+                <option value="COMPLETED/CANCELLED">COMPLETED/CANCELLED</option>
+                <option value="COMPLETED/CONFIRMED">COMPLETED/CONFIRMED</option>
+                <option value="COMPLETED/DISPATCH AVOIDED">COMPLETED/DISPATCH AVOIDED</option>
+                <option value="COMPLETED/NO CHARGE">COMPLETED/NO CHARGE</option>
+                <option value="COMPLETED/NTE INCREASE REQUESTED">COMPLETED/NTE INCREASE REQUESTED</option>
+                <option value="COMPLETED/OPERATIONAL ISSUE">COMPLETED/OPERATIONAL ISSUE</option>
+                <option value="COMPLETED/PENDING CONFIRMATION">COMPLETED/PENDING CONFIRMATION</option>
+                <option value="COMPLETED/PHONE FIX">COMPLETED/PHONE FIX</option>
+                <option value="COMPLETED/SUPPLY MANAGER FULFILLMENT">COMPLETED/SUPPLY MANAGER FULFILLMENT</option>
+                <option value="COMPLETED/VALIDATION REQUIRED">COMPLETED/VALIDATION REQUIRED</option>
             </select>
-        </div>
-        <div class="form-group">
-            <label for="resolver">IT Technician</label>
-            <input type="text" id="resolver" placeholder="Enter IT Technician name">
         </div>
         <div class="form-group">
             <label for="area">Area</label>
             <select id="area">
                 <option value="--">--</option>
-                <option value="StorePoint">StorePoint</option>
-                <option value="Radiant">Radiant</option>
+                <option value="BACKOFFICE/IT">BACKOFFICE/IT</option>
+                <option value="EG STORES">EG STORES</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="problemCode">Problem Type</label>
+            <select id="problemCode">
+                <option value="--">--</option>
+                <option value="IT RETAIL AUTOMATION HELPDESK">IT RETAIL AUTOMATION HELPDESK</option>
+                <option value="CORPORATE">CORPORATE</option>
+                <option value="HR SYSTEMS">HR SYSTEMS</option>
+                <option value="PRICEBOOK">PRICEBOOK</option>
+                <option value="FUELING SYSTEM">FUELING SYSTEM</option>
+                <option value="GENERAL MAINTENANCE">GENERAL MAINTENANCE</option>
             </select>
         </div>
         <div class="form-group">
@@ -248,86 +265,8 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="issueCategory">Issue Category</label>
-            <select id="issueCategory">
-                <option value="--">--</option>
-                <option value="Password Reset/Topics">Password Reset/Topics</option>
-                <option value="POS: Software(Storepoint)">POS: Software(Storepoint)</option>
-                <option value="POS: PINpads">POS: PINpads</option>
-                <option value="POS: Down">POS: Down</option>
-                <option value="POS: Scanner">POS: Scanner</option>
-                <option value="POS: Other Topics">POS: Other Topics</option>
-                <option value="POS: Printer">POS: Printer</option>
-                <option value="POS: Errors">POS: Errors</option>
-                <option value="POS: Coin Dispenser">POS: Coin Dispenser</option>
-                <option value="POS: Cash Drawer">POS: Cash Drawer</option>
-                <option value="POS: Registers">POS: Registers</option>
-                <option value="POS: (Radiant)">POS: (Radiant)</option>
-                <option value="POS: Hardware(Storepoint)">POS: Hardware(Storepoint)</option>
-                <option value="POS: Printers (Radiant)">POS: Printers (Radiant)</option>
-                <option value="BOS: StorePoint">BOS: StorePoint</option>
-                <option value="BOS: Other Topics">BOS: Other Topics</option>
-                <option value="Printer: Shelf Labels">Printer: Shelf Labels</option>
-                <option value="Printer: Office Printer">Printer: Office Printer</option>
-                <option value="Printer/Scanner">Printer/Scanner</option>
-                <option value="Printers(WMS)">Printers(WMS)</option>
-                <option value="BOS/SiteController">BOS/SiteController</option>
-                <option value="Computer Configuration">Computer Configuration</option>
-                <option value="Windows">Windows</option>
-                <option value="Xerox Printer Information">Xerox Printer Information</option>
-                <option value="Back Office POS(Radiant)">Back Office POS(Radiant)</option>
-                <option value="BOS: Software(Storepoint)">BOS: Software(Storepoint)</option>
-                <option value="BOS: Hardware(Storepoint)">BOS: Hardware(Storepoint)</option>
-                <option value="Electronic Payments: Loyalty">Electronic Payments: Loyalty</option>
-                <option value="Electronic Payments: Credit/Debit Issues">Electronic Payments: Credit/Debit Issues</option>
-                <option value="Electronic Payments: Other Topics">Electronic Payments: Other Topics</option>
-                <option value="Electronic Payments: Gift Cards">Electronic Payments: Gift Cards</option>
-                <option value="Electronic Payments: Individual Card Type Issues">Electronic Payments: Individual Card Type Issues</option>
-                <option value="Decline Codes">Decline Codes</option>
-                <option value="Credit/Debit (Radiant)">Credit/Debit (Radiant)</option>
-                <option value="Electronic Tenders (Storepoint)">Electronic Tenders (Storepoint)</option>
-                <option value="Loyalty (Radiant)">Loyalty (Radiant)</option>
-                <option value="Network/Communication: Other Topics">Network/Communication: Other Topics</option>
-                <option value="Network/Communication">Network/Communication</option>
-                <option value="Phone Lines: Phone Issues">Phone Lines: Phone Issues</option>
-                <option value="Telecomm">Telecomm</option>
-                <option value="Fuel: All Fuel Down">Fuel: All Fuel Down</option>
-                <option value="Fuel: Other Topics">Fuel: Other Topics</option>
-                <option value="Fuel: Price Changes">Fuel: Price Changes</option>
-                <option value="Fuel: ICR's Down">Fuel: ICR's Down</option>
-                <option value="Fuel: Pump Issues">Fuel: Pump Issues</option>
-                <option value="Fuel: ATG / Veeder Root">Fuel: ATG / Veeder Root</option>
-                <option value="Fuel: VLINX">Fuel: VLINX</option>
-                <option value="Gas Dispenser Problems (Storepoint)">Gas Dispenser Problems (Storepoint)</option>
-                <option value="Gas Dispenser Problems (Radiant)">Gas Dispenser Problems (Radiant)</option>
-                <option value="Network (Radiant)">Network (Radiant)</option>
-                <option value="PDI: Handhelds">PDI: Handhelds</option>
-                <option value="PDI: EOD Import Fails">PDI: EOD Import Fails</option>
-                <option value="PDI: Paperwork Issues">PDI: Paperwork Issues</option>
-                <option value="PDI: Server Issues">PDI: Server Issues</option>
-                <option value="PDI: Ordering">PDI: Ordering</option>
-                <option value="PDI: Other Topics">PDI: Other Topics</option>
-                <option value="End of Shift Errors">End of Shift Errors</option>
-                <option value="EOD Troubleshooting Compendium - (Radiant)">EOD Troubleshooting Compendium - (Radiant)</option>
-                <option value="Pricebook">Pricebook</option>
-                <option value="PDI Paperwork (Radiant)">PDI Paperwork (Radiant)</option>
-                <option value="PDI Handheld (Radiant)">PDI Handheld (Radiant)</option>
-                <option value="PDI (Storepoint)">PDI (Storepoint)</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="kbReference">KB Reference</label>
-            <select id="kbReference" class="disabled-dropdown" disabled>
-                <option value="--">--</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label for="description">Note</label>
             <textarea id="description" placeholder="Enter note" data-user-input=""></textarea>
-        </div>
-        <div class="form-group">
-            <label for="resolution">Resolution</label>
-            <textarea id="resolution" placeholder="Enter resolution details"></textarea>
         </div>
         <div class="form-group">
             <label for="kbArticle">KB Article/URL:</label>
@@ -342,132 +281,135 @@
     </form>
     <div class="footer">© 2025 Copyright Accenture Project EG-America</div>
     <script>
-    // Handle showing/hiding the Department field
-    document.getElementById("assignTo").addEventListener("change", function () {
-        const assignToValue = this.value;
-        const departmentGroup = document.getElementById("departmentGroup");
-
-        if (assignToValue === "Transfer") {
-            departmentGroup.style.display = "block";
-        } else {
-            departmentGroup.style.display = "none";
-        }
-    });
-
-    // Auto adjust "Note" and "Resolution" textarea height
-    const noteTextbox = document.getElementById("description");
-    const resolutionTextbox = document.getElementById("resolution");
-
-    function autoAdjustHeight(textbox) {
-        textbox.style.height = "auto";
-        textbox.style.height = textbox.scrollHeight + "px";
-    }
-
-    noteTextbox.addEventListener("input", function() {
-        noteTextbox.dataset.userInput = this.value;
-        autoAdjustHeight(this);
-    });
-
-    resolutionTextbox.addEventListener("input", function() {
-        autoAdjustHeight(this);
-    });
-
-    // Populate KB Reference dropdown based on Issue Category selection
-    function populateKBReferenceDropdown(category) {
-        const kbReferenceDropdown = document.getElementById("kbReference");
-        kbReferenceDropdown.innerHTML = '<option value="--">--</option>'; // Reset options
-
-        const kbReferences = {
-            "Password Reset/Topics": [
-                "Connect to Corporate Password Reset",
-                "Network Passwords",
-                "PDI Password Resets",
-                "Reset Store E-mail Passwords in AD",
-                "StorePoint Password Reset",
-                "Radiant Windows Password Resets",
-                "User Can’t Access UKG Pro from Home",
-                "Reset Corporate User Passwords",
-                "Service Channel Logons"
+    // Equipment dropdown for Area values
+    function populateEquipmentDropdown(area) {
+        const equipmentDropdown = document.getElementById("equipment");
+        equipmentDropdown.innerHTML = '<option value="--">--</option>';
+        const equipmentOptions = {
+            "BACKOFFICE/IT": [
+                "BOS HARDWARE","BOS SOFTWARE","BRINKS/TIDEL SAFE","CAR WASH","COMMUNICATION","DIGITAL GAS PRICE SIGN","DIGITAL MENU BOARD","DIGITAL SALE SIGN","ELECTRONIC TENDERS","GAS DISPENSER PROBLEMS","HTO TERMINALS","LABEL MAKER","LOYALTY","MONEY ORDER MACHINE","NON-IT INFORMATION REQUEST","OTHER SYSTEMS","PASSWORD RESETS","PDI","PDI HANDHELD","PDI PAPERWORK","PHONELINES","POS HARDWARE","POS HARDWARE - SELF CHECKOUT","POS SOFTWARE","POWER PROBLEMS","SKIP CO","STORE MUSIC SYSTEM-AIM","TABLETS","TEAMMATE ASSISTANCE","TITAN"
             ],
-            "POS: PINpads": [
-                "M400 PINpad Installation and Setup",
-                "M400 PINpad Ghost Touch or Bad Forms",
-                "Disable Cash Back on PINpad",
-                "StorePoint PINpad not Communicating",
-                "StorePoint EMV Troubleshooting",
-                                "Verifone PINpad Overview",
-                "Rebooting Verifone MX915 PINpads",
-                "Radiant - EMV PINpad Troubleshooting",
-                "StorePoint EMV Troubleshooting Tools",
-                "Chip Card Diagnostic on PINpad",
-                "Verifone PINpad Down Date/Time Fix"
+            "EG STORES": [
+                "EG – BACK OFFICE PC","EG – CARWASH","EG – CREDIT/DEBIT","EG – DIGITAL MENU BOARD","EG – DIGITAL SALE SIGN","EG – GAS DISPENSER PROBLEMS","EG – GIFT CARDS","EG – LOYALTY","EG – NETWORK","EG – NON-IT INFORMATION REQUEST","EG – PASSWORD RESETS","EG – PDI HANDHELD","EG – PDI PAPERWORK","EG – PHONE LINE","EG – POS","EG – POWER PROBLEMS","EG – PRICEBOOK","EG – PRICEBOOK (FRANCHISEE ONLY)","EG – PRINTERS","EG – WESTERN UNION"
             ]
-            // Add other categories and their KB references here if needed
         };
-
-        if (kbReferences[category]) {
-            kbReferences[category].forEach(kbReference => {
+        if (equipmentOptions[area]) {
+            equipmentOptions[area].forEach(equipment => {
                 const option = document.createElement('option');
-                option.value = kbReference;
-                option.text = kbReference;
-                kbReferenceDropdown.appendChild(option);
+                option.value = equipment;
+                option.text = equipment;
+                equipmentDropdown.appendChild(option);
             });
         }
     }
-
-    // Handle Issue Category change
-    document.getElementById("issueCategory").addEventListener("change", function () {
-        const issueCategory = this.value;
-        const kbReferenceDropdown = document.getElementById("kbReference");
-        const noteTextbox = document.getElementById("description");
-
-        if (issueCategory === "--") {
-            // Reset KB Reference dropdown and Note textbox if both are "--"
-            kbReferenceDropdown.disabled = true;
-            kbReferenceDropdown.classList.add("disabled-dropdown");
-            kbReferenceDropdown.innerHTML = '<option value="--">--</option>';
-            if (kbReferenceDropdown.value === "--") {
-                noteTextbox.value = "";
-                noteTextbox.dataset.userInput = "";
-                autoAdjustHeight(noteTextbox);
-            }
-        } else {
-            kbReferenceDropdown.disabled = false;
-            kbReferenceDropdown.classList.remove("disabled-dropdown");
-            populateKBReferenceDropdown(issueCategory);
-        }
+    document.getElementById("area").addEventListener("change", function () {
+        const area = this.value;
+        populateEquipmentDropdown(area);
     });
 
-    // Content to populate in the Note textbox
-    const noteContent = `
-Employee or Manager:
-Phone #:
-Available working hours:
-Any related/existing ticket:
-Which system/equipment is affected:
-What specific error message or issue are you experiencing?
-Have you tried any troubleshooting steps? If so, what are they?
-Any additional details or comments:`;
+    // Auto-fill Note with template when Equipment is selected
+    const equipmentNoteTemplate = `
+Name: 
+Store: 
+Role: 
+Store Peak hour: 
+Available working hours: 
+Any related/existing ticket: 
+What specific error occurred: 
+On which device: 
+Which system/equipment is affected: 
+How many device/s affected: 
+When did the Issue start: 
+What actions have been taken so far: 
 
-    // Handle KB Reference change and update the Note field
-    document.getElementById("kbReference").addEventListener("change", function () {
-        const kbReference = this.value;
-        const issueCategory = document.getElementById("issueCategory").value;
+Issue Description:
+`;
+
+    document.getElementById("equipment").addEventListener("change", function () {
+        const equipmentValue = this.value;
         const noteTextbox = document.getElementById("description");
-
-        if (kbReference === "--" || issueCategory === "--") {
-            // Reset the Note textbox if either dropdown is set to "--"
+        if (equipmentValue === "--") {
             noteTextbox.value = "";
             noteTextbox.dataset.userInput = "";
         } else {
-            // Preserve manually typed text
-            const userInput = noteTextbox.dataset.userInput || "";
-            if (!userInput.includes(noteContent.trim())) {
-                noteTextbox.value = userInput + noteContent.trim();
-            }
+            noteTextbox.value = equipmentNoteTemplate.trim();
+            noteTextbox.dataset.userInput = noteTextbox.value;
         }
-        autoAdjustHeight(noteTextbox);
+        // Adjust textarea height
+        noteTextbox.style.height = "auto";
+        noteTextbox.style.height = noteTextbox.scrollHeight + "px";
     });
+
+    // Clipboard copy for ticket details (with HTML formatting for internal notice)
+    function copyDetails() {
+        const title = document.getElementById("title").value;
+        const ticketNumber = document.getElementById("ticketNumber").value || "";
+        const banner = document.getElementById("banner").selectedOptions[0].text || "--";
+        const storeNumber = document.getElementById("storeNumber").value || "";
+        const severity = document.getElementById("severity").value || "--";
+        const status = document.getElementById("status").value || "--";
+        const area = document.getElementById("area").selectedOptions[0].text || "--";
+        const equipment = document.getElementById("equipment").selectedOptions[0].text || "--";
+        const problemCode = document.getElementById("problemCode").selectedOptions[0].text || "--";
+        const description = document.getElementById("description").value || "";
+        const kbArticle = document.getElementById("kbArticle").value || "No Article Available";
+        const currentTimestamp = new Date().toLocaleString();
+
+        document.getElementById("timestamp").innerText = `Date & Time: ${currentTimestamp}`;
+
+        // Use HTML for bold, italic, and underline
+        const ticketDetailsHTML = `
+<div>Ticket Description: ${title}</div>
+<div>Ticket #: ${ticketNumber}</div>
+<div>Banner: ${banner}</div>
+<div>Store #: ${storeNumber}</div>
+<div>SLA Priority Level: ${severity}</div>
+<div>Status: ${status}</div>
+<div>Area: ${area}</div>
+<div>Equipment: ${equipment}</div>
+<div>Problem Type: ${problemCode}</div>
+<div>Note:<br>${description.replace(/\n/g, '<br>')}</div>
+<div>KB Article/URL:<br>${kbArticle}</div>
+<div><b><i><u>For Internal use ONLY.</u></i></b></div>
+<div>Date & Time: ${currentTimestamp}</div>
+`;
+
+        // Copy as rich text (HTML)
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = ticketDetailsHTML;
+        document.body.appendChild(tempDiv);
+
+        if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+            const range = document.createRange();
+            range.selectNodeContents(tempDiv);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            try {
+                document.execCommand('copy');
+                alert("Ticket details (with timestamp) copied to clipboard!");
+            } catch (err) {
+                alert("Failed to copy details: " + err);
+            }
+            selection.removeAllRanges();
+        } else if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(tempDiv.innerText).then(
+                () => alert("Ticket details copied as plain text."),
+                err => alert("Failed to copy details: " + err)
+            );
+        }
+        document.body.removeChild(tempDiv);
+    }
+
+    function clearForm() {
+        document.getElementById("ticketForm").reset();
+        document.getElementById("timestamp").innerText = "";
+        document.getElementById("description").style.height = "80px";
+        document.getElementById("description").dataset.userInput = "";
+        const equipmentDropdown = document.getElementById("equipment");
+        equipmentDropdown.innerHTML = '<option value="--">--</option>';
+    }
 
     // Validate numeric input and restrict to numbers only
     function validateNumber(input) {
@@ -503,172 +445,16 @@ Any additional details or comments:`;
         }
     }
 
-    // Populate Equipment dropdown based on Area selection
-    function populateEquipmentDropdown(area) {
-        const equipmentDropdown = document.getElementById("equipment");
-        equipmentDropdown.innerHTML = '<option value="--">--</option>'; // Reset options
-
-        const equipmentOptions = {
-            "StorePoint": [
-                "BOS HARDWARE",
-                "BOS SOFTWARE",
-                "BRINKS/TIDEL SAFE",
-                "CAR WASH",
-                "COMMUNICATION",
-                "DIGITAL GAS PRICE SIGN",
-                "DIGITAL MENU BOARD",
-                "DIGITAL SALE SIGN",
-                "ELECTRONIC TENDERS",
-                "GAS DISPENSER PROBLEMS",
-                "HTO TERMINALS",
-                "LABEL MAKER",
-                "LOYALTY",
-                "MONEY ORDER MACHINE",
-                "NON-IT INFORMATION REQUEST",
-                "OTHER SYSTEMS",
-                "PASSWORD RESETS",
-                "PDI",
-                "PDI HANDHELD",
-                "PDI PAPERWORK",
-                "PHONELINES",
-                "POS HARDWARE",
-                "POS HARDWARE - SELF CHECKOUT",
-                "POS SOFTWARE",
-                "POWER PROBLEMS",
-                "SKIP CO",
-                "STORE MUSIC SYSTEM-AIM",
-                "TABLETS",
-                "TEAMMATE ASSISTANCE",
-                "TITAN"
-            ],
-            "Radiant": [
-                "EG – BACK OFFICE PC",
-                "EG – CARWASH",
-                "EG – CREDIT/DEBIT",
-                "EG – DIGITAL MENU BOARD",
-                "EG – DIGITAL SALE SIGN",
-                "EG – GAS DISPENSER PROBLEMS",
-                "EG – GIFT CARDS",
-                "EG – LOYALTY",
-                "EG – NETWORK",
-                "EG – NON-IT INFORMATION REQUEST",
-                "EG – PASSWORD RESETS",
-                "EG – PDI HANDHELD",
-                "EG – PDI PAPERWORK",
-                "EG – PHONE LINE",
-                "EG – POS",
-                "EG – POWER PROBLEMS",
-                "EG – PRICEBOOK",
-                "EG – PRICEBOOK (FRANCHISEE ONLY)",
-                "EG – PRINTERS",
-                "EG – WESTERN UNION"
-            ]
-        };
-
-        if (equipmentOptions[area]) {
-            equipmentOptions[area].forEach(equipment => {
-                const option = document.createElement('option');
-                option.value = equipment;
-                option.text = equipment;
-                equipmentDropdown.appendChild(option);
-            });
-        }
+    // Auto adjust "Note" textarea height
+    const noteTextbox = document.getElementById("description");
+    function autoAdjustHeight(textbox) {
+        textbox.style.height = "auto";
+        textbox.style.height = textbox.scrollHeight + "px";
     }
-
-    // Handle Area change
-    document.getElementById("area").addEventListener("change", function () {
-        const area = this.value;
-        populateEquipmentDropdown(area);
+    noteTextbox.addEventListener("input", function() {
+        noteTextbox.dataset.userInput = this.value;
+        autoAdjustHeight(this);
     });
-
-    // Copy ticket details to clipboard
-    function copyDetails() {
-        const title = document.getElementById("title").value;
-        const ticketNumber = document.getElementById("ticketNumber").value || "";
-        const banner = document.getElementById("banner").selectedOptions[0].text || "--";
-        const storeNumber = document.getElementById("storeNumber").value || "";
-        const severity = document.getElementById("severity").value || "--";
-        const assignTo = document.getElementById("assignTo").value || "--";
-        const departmentGroup = document.getElementById("departmentGroup").style.display !== "none";
-        const department = departmentGroup ? document.getElementById("department").value : "";
-        const status = document.getElementById("status").value || "--";
-        const resolver = document.getElementById("resolver").value || "";
-        const area = document.getElementById("area").selectedOptions[0].text || "--";
-        const equipment = document.getElementById("equipment").selectedOptions[0].text || "--";
-        const issueCategory = document.getElementById("issueCategory").selectedOptions[0].text || "--";
-        const kbReference = document.getElementById("kbReference").selectedOptions[0].text || "--";
-        const description = document.getElementById("description").value || "";
-        const resolution = document.getElementById("resolution").value || "No Resolution Yet";
-        const kbArticle = document.getElementById("kbArticle").value || "No Article Available"; // Default message here
-        const currentTimestamp = new Date().toLocaleString();
-
-        // Set the timestamp on the form
-        document.getElementById("timestamp").innerText = `Date & Time: ${currentTimestamp}`;
-
-        // Create the ticket details string with HTML tags for formatting
-        const ticketDetails = `
-        <div><strong>Ticket Description:</strong> ${title}</div>
-        <div><strong>Ticket #:</strong> ${ticketNumber}</div>
-        <div><strong>Banner:</strong> ${banner}</div>
-        <div><strong>Store #:</strong> ${storeNumber}</div>
-        <div><strong>SLA Priority Level:</strong> ${severity}</div>
-        <div><strong>Assign To:</strong> ${assignTo}</div>
-        ${(departmentGroup && department) ? `<div><strong>Department:</strong> ${department}</div>` : ''}
-        <div><strong>Status:</strong> ${status}</div>
-        <div><strong>IT Technician:</strong> ${resolver}</div>
-        <div><strong>Area:</strong> ${area}</div>
-        <div><strong>Equipment:</strong> ${equipment}</div>
-        <div><strong>Issue Category:</strong> ${issueCategory}</div>
-        <div><strong>KB Reference:</strong> ${kbReference}</div>
-        ${description ? `<div><strong>Note:</strong><br>${description.replace(/\n/g, '<br>')}</div>` : '<div><strong>Note:</strong></div>'}
-        <div><strong>Resolution:</strong><br>${resolution.replace(/\n/g, '<br>')}</div>
-        <div><strong>KB Article/URL:</strong><br>${kbArticle}</div>
-        <div><strong><u><i>For Internal use ONLY.</i></u></strong></div>
-        <div><strong>Date & Time:</strong> ${currentTimestamp}</div>`;
-
-        // Create a temporary element to hold the HTML content
-        const tempElem = document.createElement('div');
-        tempElem.innerHTML = ticketDetails;
-
-        // Copy the contents of the temporary element to the clipboard
-        document.body.appendChild(tempElem);
-        const range = document.createRange();
-        range.selectNode(tempElem);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-
-        try {
-            document.execCommand('copy');
-            alert("Ticket details (with timestamp) copied to clipboard!");
-        } catch (err) {
-            alert("Failed to copy details: " + err);
-        }
-
-        // Clean up
-        document.body.removeChild(tempElem);
-        window.getSelection().removeAllRanges();
-    }
-
-    // Clear the form
-    function clearForm() {
-        // Reset all fields in the form
-        document.getElementById("ticketForm").reset();
-        console.log("Form reset");
-        // Clear timestamp text
-        document.getElementById("timestamp").innerText = "";
-        console.log("Timestamp cleared");
-
-        // Hide the Department group if shown
-        document.getElementById("departmentGroup").style.display = "none";
-        console.log("Department group hidden");
-
-        // Reset "Note" and "Resolution" textboxes to original size
-        document.getElementById("description").style.height = "80px";
-        document.getElementById("resolution").style.height = "80px";
-
-        // Clear user input data
-        noteTextbox.dataset.userInput = "";
-    }
-</script>
+    </script>
 </body>
 </html>
