@@ -357,7 +357,7 @@ Issue Description:
 
         document.getElementById("timestamp").innerText = `Date & Time: ${currentTimestamp}`;
 
-        // Use HTML for bold, italic, and underline
+        // "Problem Type" is now shown before "Equipment"
         const ticketDetailsHTML = `
 <div>Ticket Description: ${title}</div>
 <div>Ticket #: ${ticketNumber}</div>
@@ -366,8 +366,8 @@ Issue Description:
 <div>SLA Priority Level: ${severity}</div>
 <div>Status: ${status}</div>
 <div>Area: ${area}</div>
-<div>Equipment: ${equipment}</div>
 <div>Problem Type: ${problemCode}</div>
+<div>Equipment: ${equipment}</div>
 <div>Note:<br>${description.replace(/\n/g, '<br>')}</div>
 <div>KB Article/URL:<br>${kbArticle}</div>
 <div><b><i><u>For Internal use ONLY.</u></i></b></div>
