@@ -75,27 +75,38 @@
             display: flex;
             justify-content: space-between;
             margin-top: 15px;
+            gap: 8px;
         }
-        .button-group button {
-            width: 48%;
+        .button-group button,
+        #templatePopup .popup-inner button,
+        #noteDetailsModal .closeBtn {
+            width: 100%;
             padding: 10px;
             font-size: 14px;
-            color: #fff;
-            border: none;
+            color: #000;
+            background: #fff;
+            border: 1px solid #000;
             border-radius: 4px;
             cursor: pointer;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+            transition: none;
         }
-        .button-group .copy {
-            background-color: #28a745;
+        .button-group button {
+            width: 31%;
         }
-        .button-group .copy:hover {
-            background-color: #1e7e34;
+        #templatePopup .popup-inner .cancel,
+        #noteDetailsModal .closeBtn {
+            margin-top: 18px;
+            padding: 10px;
+            width: 100%;
         }
-        .button-group .clear {
-            background-color: #dc3545;
-        }
-        .button-group .clear:hover {
-            background-color: #a71d2a;
+        .button-group button:hover,
+        #templatePopup .popup-inner button:hover,
+        #noteDetailsModal .closeBtn:hover {
+            background: #f0f0f0;
+            color: #000;
+            border: 1px solid #000;
         }
         .timestamp {
             text-align: center;
@@ -116,6 +127,79 @@
             bottom: 0.5px;
             width: 100%;
         }
+        #templatePopup {
+            display: none;
+            position: fixed;
+            z-index: 9998;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.3);
+        }
+        #templatePopup .popup-inner {
+            background: #fff;
+            border-radius: 8px;
+            max-width: 340px;
+            margin: 80px auto;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        #templatePopup .popup-inner h3 {
+            margin-bottom: 16px;
+        }
+        /* COLUMN LAYOUT FOR TEMPLATE BUTTONS */
+        .template-btn-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .template-btn-column button {
+            width: 100%;
+            margin: 0;
+        }
+        /* Floating Note Details Modal */
+        #noteDetailsModal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.3);
+        }
+        #noteDetailsModal .modal-inner {
+            background: #fff;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 80px auto;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        #noteDetailsModal .modal-inner h3 {
+            margin-bottom: 16px;
+        }
+        /* FULL UPDATE FOR NOTE DETAILS TEXTAREA */
+        #noteDetailsModal .modal-inner textarea {
+            display: block;
+            margin: 0 auto 16px auto;
+            width: 600px;        /* Half the viewport width on laptop/desktop */
+            min-width: 320px;
+            max-width: 80vw;    /* Don't exceed 80% of viewport */
+            border: 3px solid #000; /* Thicker border for clarity */
+            border-radius: 8px;
+            font-size: 12px;
+            padding: 12px;
+            resize: none;
+            box-sizing: border-box;
+        }
         @media (max-width: 768px) {
             .ticket-form {
                 width: 100%;
@@ -133,6 +217,17 @@
                 height: auto;
                 display: block;
                 padding: 10px;
+            }
+            #templatePopup .popup-inner,
+            #noteDetailsModal .modal-inner {
+                margin: 40px auto;
+                max-width: 95vw;
+            }
+            /* FULL UPDATE FOR NOTE DETAILS TEXTAREA ON MOBILE */
+            #noteDetailsModal .modal-inner textarea {
+                width: 95vw;
+                min-width: 0;
+                max-width: 95vw;
             }
         }
         @media (min-width: 768px) and (max-width: 1024px) {
@@ -274,13 +369,90 @@
             <div class="alert" id="kbArticleAlert">Please enter a valid https:// or http:// URL</div>
         </div>
         <div class="button-group">
-            <button type="button" class="copy" onclick="copyDetails()">Copy</button>
-            <button type="button" class="clear" onclick="clearForm()">Clear</button>
+            <button type="button" onclick="copyDetails()">Copy</button>
+            <button type="button" onclick="showTemplatePopup()">Generate Template</button>
+            <button type="button" onclick="clearForm()">Clear</button>
         </div>
         <div class="timestamp" id="timestamp"></div>
     </form>
+    <!-- Template Popup Modal -->
+    <div id="templatePopup">
+        <div class="popup-inner">
+            <h3>Select Template Type</h3>
+            <div class="template-btn-column">
+                <button type="button" onclick="selectTemplate('serviceChannel')">Service Channel</button>
+                <button type="button" onclick="selectTemplate('followUp')">Follow-up</button>
+                <button type="button" onclick="selectTemplate('threeStrike')">Three Strike Rule</button>
+            </div>
+            <button type="button" onclick="closeTemplatePopup()">Cancel</button>
+        </div>
+    </div>
+    <!-- Floating Note Details Modal -->
+    <div id="noteDetailsModal">
+        <div class="modal-inner">
+            <h3>Note Details</h3>
+            <textarea id="noteDetails" placeholder="Generated note details will appear here" data-user-input=""></textarea>
+            <br>
+            <button type="button" class="closeBtn" onclick="closeNoteDetailsModal()">Close</button>
+        </div>
+    </div>
     <div class="footer">© 2025 Copyright Accenture Project EG-America</div>
     <script>
+    // Popup modal for template generation
+    function showTemplatePopup() {
+        document.getElementById('templatePopup').style.display = 'block';
+    }
+    function closeTemplatePopup() {
+        document.getElementById('templatePopup').style.display = 'none';
+    }
+    function selectTemplate(type) {
+        const noteDetailsModal = document.getElementById("noteDetailsModal");
+        const noteDetailsTextbox = document.getElementById("noteDetails");
+        let template = "";
+        if (type === 'serviceChannel') {
+            template =
+`Name: (Name of caller/contact)
+Role: (Manager/Cashier/Staff/Etc.)
+Store peak hours:
+Available working hours:
+Any related/existing ticket:
+What specific error occurred:
+On which device:
+Which system/equipment is affected:
+How many device/s affected:
+When did the Issue start:
+What actions/troubleshooting steps have been taken: (Include phone discussion and full TS Steps)
+KB Article/URL:`;
+        } else if (type === 'followUp') {
+            template =
+`[Follow-up Template]
+Name:
+Ticket #:
+Follow-up Date:
+Contacted by:
+Summary of previous actions:
+Current status:
+Next steps:`;
+        } else if (type === 'threeStrike') {
+            template =
+`[Three Strike Rule Template]
+Name:
+Ticket #:
+Strike 1 - Date & Details:
+Strike 2 - Date & Details:
+Strike 3 - Date & Details:
+Resolution/Action Taken:`;
+        }
+        noteDetailsTextbox.value = template;
+        noteDetailsTextbox.dataset.userInput = template;
+        noteDetailsModal.style.display = "block";
+        autoAdjustHeight(noteDetailsTextbox);
+        closeTemplatePopup();
+    }
+    function closeNoteDetailsModal() {
+        document.getElementById("noteDetailsModal").style.display = "none";
+    }
+
     // Equipment dropdown for Area values
     function populateEquipmentDropdown(area) {
         const equipmentDropdown = document.getElementById("equipment");
@@ -350,6 +522,9 @@ What actions have been taken so far:
         const problemCode = document.getElementById("problemCode").selectedOptions[0].text || "--";
         const description = document.getElementById("description").value || "";
         const kbArticle = document.getElementById("kbArticle").value || "No Article Available";
+        const noteDetailsModal = document.getElementById("noteDetailsModal");
+        const noteDetails = noteDetailsModal.style.display !== "none"
+            ? document.getElementById("noteDetails").value : "";
         const currentTimestamp = new Date().toLocaleString();
 
         document.getElementById("timestamp").innerText = `Date & Time: ${currentTimestamp}`;
@@ -366,6 +541,7 @@ What actions have been taken so far:
 <div><b>Problem Type:</b> ${problemCode}</div>
 <div><b>Equipment:</b> ${equipment}</div>
 <div><b>Note:</b><br>${description.replace(/\n/g, '<br>')}</div>
+${noteDetails ? `<div><b>Note Details:</b><br>${noteDetails.replace(/\n/g, '<br>')}</div>` : ""}
 <div><b>KB Article/URL:</b><br>${kbArticle}</div>
 <div><b><i><u>For Internal use ONLY.</u></i></b></div>
 <div><b>Date & Time:</b> ${currentTimestamp}</div>
@@ -406,6 +582,10 @@ What actions have been taken so far:
         document.getElementById("description").dataset.userInput = "";
         const equipmentDropdown = document.getElementById("equipment");
         equipmentDropdown.innerHTML = '<option value="--">--</option>';
+        // Hide and clear noteDetails modal
+        closeNoteDetailsModal();
+        document.getElementById("noteDetails").value = "";
+        document.getElementById("noteDetails").dataset.userInput = "";
     }
 
     // Validate numeric input and restrict to numbers only
@@ -442,14 +622,19 @@ What actions have been taken so far:
         }
     }
 
-    // Auto adjust "Note" textarea height
-    const noteTextbox = document.getElementById("description");
+    // Auto adjust textarea height for notes and note details
     function autoAdjustHeight(textbox) {
         textbox.style.height = "auto";
         textbox.style.height = textbox.scrollHeight + "px";
     }
+    const noteTextbox = document.getElementById("description");
     noteTextbox.addEventListener("input", function() {
         noteTextbox.dataset.userInput = this.value;
+        autoAdjustHeight(this);
+    });
+    const noteDetailsTextbox = document.getElementById("noteDetails");
+    noteDetailsTextbox.addEventListener("input", function() {
+        noteDetailsTextbox.dataset.userInput = this.value;
         autoAdjustHeight(this);
     });
     </script>
