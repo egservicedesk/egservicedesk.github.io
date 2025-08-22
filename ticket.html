@@ -384,19 +384,23 @@
             theme: 'snow',
             placeholder: 'Enter note details here...'
         });
+        // Set default for Follow-up/Call Attempt
+        insertQuillTemplate('followUpCallAttempt');
     });
     // Utility to insert the styled template
     function insertQuillTemplate(type) {
         if (!window.quillNoteDetails) return;
 
         if (type === 'followUpCallAttempt') {
-            // Compose HTML with gray parentheses
+            // Compose HTML with grayed parentheses and text
             const templateHTML = `
 <div>Name:</div>
 <div>Contact Method: <span class="gray-paren">(Phone/Email/Kaseya)</span></div>
-<div>Contact number: <span class="gray-paren">(1st/2nd attempt - callback, left a voicemail, message in Kaseya, and Email, 3rd attempt just add and cc DM's email and if still no response from store and DM after 3rd attempt. Closing ticket)</span></div>
-<div>Callback attempt:</div>
-<div>Action Owner:</div>
+<div>Contact number:</div>
+<div>Callback attempt: <span class="gray-paren">(1st/2nd attempt - callback, left a voicemail, message in Kaseya, and Email)</span></div>
+<div><span class="gray-paren">(3rd attempt - callback, left a voicemail, message in Kaseya, Email store and DM)</span></div>
+<div><span class="gray-paren">(No response from store and DM after 3rd attempt. Closing ticket)</span></div>
+<div>Action Owner: <span class="gray-paren">(Marketspark, Evolve, Servicedesk, Helpdesk, L2, FTS, FSS, Escalation Team, Marketing Team, etc.)</span></div>
 <div>Next Action Required:</div>
 `;
             window.quillNoteDetails.root.innerHTML = templateHTML;
@@ -546,6 +550,8 @@ ${noteDetails ? `<div><b>Note Details:</b><br>${noteDetails}</div>` : ""}
         equipmentDropdown.innerHTML = '<option value="--">--</option>';
         closeNoteDetailsModal();
         if (window.quillNoteDetails) window.quillNoteDetails.root.innerHTML = "";
+        // Reset default text for Follow-up/Call Attempt
+        insertQuillTemplate('followUpCallAttempt');
     }
     function validateNumber(input) {
         const value = input.value;
