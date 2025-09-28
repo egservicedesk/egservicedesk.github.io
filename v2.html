@@ -14,16 +14,10 @@
       animation: fadeInBackground 2s ease-in-out;
       transition: background 1s ease-in-out;
     }
-
     @keyframes fadeInBackground {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
-
     .bg-fade {
       position: fixed;
       top: 0; left: 0;
@@ -35,7 +29,6 @@
       background-position: center center;
       background-size: cover;
     }
-
     .sidebar {
       width: 200px;
       margin-right: 20px;
@@ -97,8 +90,6 @@
       border-radius: 5px;
       display: none;
     }
-
-    /* Fade-In Reminders Section */
     .fade-link {
       display: block;
       margin: 12px 0;
@@ -126,8 +117,36 @@
       display: block;
       opacity: 1;
     }
+    .input-error {
+      border: 2px solid #dc3545 !important;
+      background-color: #fff0f0;
+      animation: none;
+    }
+    .error-message {
+      color: #dc3545;
+      font-size: 13px;
+      margin: -10px 0 10px 0;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .error-message.fadein {
+      display: block;
+      opacity: 1;
+      animation: fadeError 5s linear forwards;
+    }
+    @keyframes blinkError {
+      0%, 100% { background-color: #fff0f0; border-color: #dc3545; }
+      20% { background-color: #fff; border-color: #dc3545; }
+      40% { background-color: #fff0f0; border-color: #dc3545; }
+      60% { background-color: #fff; border-color: #dc3545; }
+      80% { background-color: #fff0f0; border-color: #dc3545; }
+    }
+    @keyframes fadeError {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
   </style>
-
   <script>
     // Wallpaper images array (wallpaper1.jpg to wallpaper15.jpg)
     const images = [
@@ -147,8 +166,78 @@
       'wallpaper14.jpg',
       'wallpaper15.jpg'
     ];
-
     let currentIndex = Math.floor(Math.random() * images.length);
+
+    // Equipment option lists
+    const cfEquipmentOptions = [
+      "Bos hardware",
+      "Bos software",
+      "Brinks/Tidel safe",
+      "Car wash",
+      "Communication",
+      "Digital gas price sign",
+      "Digital menu board",
+      "Digital sale sign",
+      "Electronic tenders",
+      "Gas dispenser problems",
+      "Hto terminals",
+      "Label maker",
+      "Loyalty",
+      "Money order machine",
+      "Non-IT information request",
+      "Other systems",
+      "Password resets",
+      "Pdi",
+      "Pdi handheld",
+      "Pdi paperwork",
+      "Phonelines",
+      "Pos hardware",
+      "Pos hardware - self checkout",
+      "Pos software",
+      "Power problems",
+      "Skip co",
+      "Store music system-AIM",
+      "Tablets",
+      "Teammate assistance",
+      "Titan"
+    ];
+    const egEquipmentOptions = [
+      "EG – Back office",
+      "EG – Carwash",
+      "EG – Credit/debit",
+      "EG – Digital menu board",
+      "EG – Digital sale sign",
+      "EG – Gas dispenser problems",
+      "EG – Gift cards",
+      "EG – Loyalty",
+      "EG – Network",
+      "EG – Non-IT information request",
+      "EG – Password resets",
+      "EG – Pdi handheld",
+      "EG – Pdi paperwork",
+      "EG – Phone line",
+      "EG – Pos",
+      "EG – Power problems",
+      "EG – Pricebook",
+      "EG – Pricebook (franchisee only)",
+      "EG – Printers",
+      "EG – Western union"
+    ];
+
+    function setEquipmentOptions(options) {
+      const equipmentSelect = document.getElementById("zoomEquipment");
+      equipmentSelect.innerHTML = ''; // Clear all options
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "--Select Equipment--";
+      equipmentSelect.appendChild(defaultOption);
+      options.forEach(opt => {
+        const option = document.createElement("option");
+        option.value = opt;
+        option.textContent = opt;
+        equipmentSelect.appendChild(option);
+      });
+    }
 
     document.addEventListener("DOMContentLoaded", function () {
       // Create two layers for fading effect
@@ -179,6 +268,28 @@
         currentIndex = nextIndex;
         active = 1 - active;
       }, 60000); // 1 minute
+
+      // Numeric validation listeners for Zoom Template
+      document.getElementById('zoomTicket').addEventListener('input', function(e) {
+        validateNumberInput(e, 'zoomTicket', 'zoomTicketError');
+      });
+      document.getElementById('zoomStore').addEventListener('input', function(e) {
+        validateNumberInput(e, 'zoomStore', 'zoomStoreError');
+      });
+
+      // Dynamic Equipment dropdown for Banner
+      const bannerSelect = document.getElementById("zoomBanner");
+      bannerSelect.addEventListener("change", function() {
+        if (bannerSelect.value === "Cumberland Farms (CF)") {
+          setEquipmentOptions(cfEquipmentOptions);
+        } else if (bannerSelect.value !== "") {
+          setEquipmentOptions(egEquipmentOptions);
+        } else {
+          setEquipmentOptions([]);
+        }
+      });
+      // Initialize Equipment dropdown on page load
+      setEquipmentOptions([]);
     });
 
     function showForm(sectionId) {
@@ -221,7 +332,7 @@ Dispensed prepay (grey)
 attempt to total it, if it's an unpumped prepay (black) that needs to be removed, line or trans void it.
 If a dispensed SmartPay prepay gives Dupe Trans 94 error when trying to total it, or OLA 103 at a v6308 OEMV site, we should remove the stuck transaction from the register.
 Quit POS32 to desktop.
-Open the file explorer and navigate to C:\positive\exe\.
+Open the file explorer and navigate to C:\\positive\\exe\\.
 Delete the .TRS file there before launching POS32 up again.
 
 Unable to recall and process normally
@@ -340,8 +451,6 @@ Troubleshooting step 5`;
         copyMsg.style.display = 'none';
       }, 2000);
     }
-
-    // Utility function to get EST time (no label/title)
     function getESTTime() {
       const now = new Date();
       const formatter = new Intl.DateTimeFormat('en-US', {
@@ -358,8 +467,6 @@ Troubleshooting step 5`;
       const get = type => parts.find(p => p.type === type).value;
       return `${get('month')}/${get('day')}/${get('year')} ${get('hour')}:${get('minute')}:${get('second')} EST`;
     }
-
-    // Copy with time (no label/title) for update form
     function generateUpdateForm() {
       const updateSection = document.getElementById('update');
       const nextActionField = document.getElementById('nextAction');
@@ -397,22 +504,62 @@ Troubleshooting step 5`;
         }
       });
     }
-
-    // NO time for 3-Strike Rule Copy Form
     function generateStrikeForm() {
       const ticketText = document.getElementById('ticketUpdateContent').value;
       navigator.clipboard.writeText(ticketText).then(showCopyMessage);
     }
-
-    // NO time for Email Template
     function copyEmailContent() {
       const emailText = document.getElementById('emailTemplateContent').value;
       navigator.clipboard.writeText(emailText).then(showCopyMessage);
     }
+    // Validation for Ticket # and Store # (numbers only)
+    function validateNumberInput(event, fieldId, errorId) {
+      const val = event.target.value;
+      const field = event.target;
+      const errorEl = document.getElementById(errorId);
 
-    // Copy with time (no label/title) for Zoom template
+      if (val && !/^\d*$/.test(val)) {
+        field.classList.add('input-error');
+        errorEl.classList.remove('fadein'); // restart fade effect
+        errorEl.style.display = 'block';
+        errorEl.style.opacity = '1';
+
+        // Blink 5 times & fade error in 5 seconds
+        field.style.animation = 'blinkError 1s linear 0s 5 alternate';
+        errorEl.classList.add('fadein');
+        setTimeout(() => {
+          field.style.animation = '';
+          errorEl.classList.remove('fadein');
+          errorEl.style.display = 'none';
+          errorEl.style.opacity = '0';
+        }, 5000);
+      } else {
+        field.classList.remove('input-error');
+        field.style.animation = '';
+        errorEl.classList.remove('fadein');
+        errorEl.style.display = 'none';
+        errorEl.style.opacity = '0';
+      }
+    }
     function generateZoomForm() {
       const zoomSection = document.getElementById('zoom');
+      const ticketInput = document.getElementById('zoomTicket');
+      const storeInput = document.getElementById('zoomStore');
+      let valid = true;
+      if (ticketInput.value && !/^\d+$/.test(ticketInput.value)) {
+        ticketInput.classList.add('input-error');
+        validateNumberInput({target:ticketInput}, 'zoomTicket', 'zoomTicketError');
+        valid = false;
+      }
+      if (storeInput.value && !/^\d+$/.test(storeInput.value)) {
+        storeInput.classList.add('input-error');
+        validateNumberInput({target:storeInput}, 'zoomStore', 'zoomStoreError');
+        valid = false;
+      }
+      if (!valid) {
+        alert("Ticket # and Store # can only contain numbers.");
+        return;
+      }
       const fields = zoomSection.querySelectorAll('input, textarea, select');
       let formText = "";
       fields.forEach(field => {
@@ -441,8 +588,6 @@ Troubleshooting step 5`;
         }
       });
     }
-
-    // Fade-In for Reminders Section
     function fadeToggle(id) {
       var el = document.getElementById(id);
       if (!el) return;
@@ -548,7 +693,8 @@ Thank you for your attention to this matter.</textarea>
         <h2>Zoom Template</h2>
         <h3>Ticket Information</h3>
         <input type="text" placeholder="Ticket Description:" />
-        <input type="text" placeholder="Ticket #:" />
+        <input type="text" placeholder="Ticket #:" id="zoomTicket" />
+        <div id="zoomTicketError" class="error-message">This entry can only contain numbers.</div>
         <label for="zoomBanner">Banner:</label>
         <select id="zoomBanner">
           <option value="">--Select Banner--</option>
@@ -573,7 +719,8 @@ Thank you for your attention to this matter.</textarea>
           <option value="Turkey Hill (TH)">Turkey Hill (TH)</option>
           <option value="Turkey Hill Midwest (TM)">Turkey Hill Midwest (TM)</option>
         </select>
-        <input type="text" placeholder="Store #:" />
+        <input type="text" placeholder="Store #:" id="zoomStore" />
+        <div id="zoomStoreError" class="error-message">This entry can only contain numbers.</div>
         <label for="zoomSla">SLA Priority Level:</label>
         <select id="zoomSla">
           <option value="">--Select Priority--</option>
@@ -637,57 +784,7 @@ Thank you for your attention to this matter.</textarea>
         </select>
         <label for="zoomEquipment">Equipment:</label>
         <select id="zoomEquipment">
-          <option value="">--Select Equipment--</option>
-          <option value="Bos hardware">Bos hardware</option>
-          <option value="Bos software">Bos software</option>
-          <option value="Brinks/Tidel safe">Brinks/Tidel safe</option>
-          <option value="Car wash">Car wash</option>
-          <option value="Communication">Communication</option>
-          <option value="Digital gas price sign">Digital gas price sign</option>
-          <option value="Digital menu board">Digital menu board</option>
-          <option value="Digital sale sign">Digital sale sign</option>
-          <option value="Electronic tenders">Electronic tenders</option>
-          <option value="Gas dispenser problems">Gas dispenser problems</option>
-          <option value="Hto terminals">Hto terminals</option>
-          <option value="Label maker">Label maker</option>
-          <option value="Loyalty">Loyalty</option>
-          <option value="Money order machine">Money order machine</option>
-          <option value="Non-It information request">Non-It information request</option>
-          <option value="Other systems">Other systems</option>
-          <option value="Password resets">Password resets</option>
-          <option value="Pdi">Pdi</option>
-          <option value="Pdi handheld">Pdi handheld</option>
-          <option value="Pdi paperwork">Pdi paperwork</option>
-          <option value="Phonelines">Phonelines</option>
-          <option value="Pos hardware">Pos hardware</option>
-          <option value="Pos hardware - self checkout">Pos hardware - self checkout</option>
-          <option value="Pos software">Pos software</option>
-          <option value="Power problems">Power problems</option>
-          <option value="Skip co">Skip co</option>
-          <option value="Store music system-Aim">Store music system-Aim</option>
-          <option value="Tablets">Tablets</option>
-          <option value="Teammate assistance">Teammate assistance</option>
-          <option value="Titan">Titan</option>
-          <option value="EG – Back office">EG – Back office</option>
-          <option value="EG – Carwash">EG – Carwash</option>
-          <option value="EG – Credit/Debit">EG – Credit/Debit</option>
-          <option value="EG – Digital menu board">EG – Digital menu board</option>
-          <option value="EG – Digital sale sign">EG – Digital sale sign</option>
-          <option value="EG – Gas dispenser problems">EG – Gas dispenser problems</option>
-          <option value="EG – Gift cards">EG – Gift cards</option>
-          <option value="EG – Loyalty">EG – Loyalty</option>
-          <option value="EG – Network">EG – Network</option>
-          <option value="EG – Non-It information request">EG – Non-It information request</option>
-          <option value="EG – Password resets Check mark">EG – Password resets Check mark</option>
-          <option value="EG – Pdi handheld">EG – Pdi handheld</option>
-          <option value="EG – Pdi paperwork">EG – Pdi paperwork</option>
-          <option value="EG – Phone line">EG – Phone line</option>
-          <option value="EG – Pos">EG – Pos</option>
-          <option value="EG – Power problems">EG – Power problems</option>
-          <option value="EG – Pricebook">EG – Pricebook</option>
-          <option value="EG – Pricebook (Franchisee only)">EG – Pricebook (Franchisee only)</option>
-          <option value="EG – Printers">EG – Printers</option>
-          <option value="EG – Western union">EG – Western union</option>
+          <!-- Options will be populated by JS -->
         </select>
       </div>
       <div class="form-box">
@@ -709,8 +806,6 @@ Thank you for your attention to this matter.</textarea>
       <button class="clear-btn" onclick="clearZoomForm()">Clear Form</button>
     </div>
   </div>
-
-  <!-- Fade-In Reminders Section -->
   <div style="position: absolute; top: 20px; right: 20px; width: 600px; padding: 15px; background-color: #ffffffcc; border: 2px solid #ccc; border-radius: 10px; font-family: Arial, sans-serif; font-size: 14px;">
     <h3>📌Reminders📌</h3>
     <span class="fade-link" onclick="fadeToggle('fssMsg')">FSS handles Pump &amp; Card Reader Hardware Issues</span>
@@ -723,7 +818,6 @@ Thank you for your attention to this matter.</textarea>
       </ul>
       These issues should be escalated directly to Gas Maintenance (FSS), provided KBs for EO1 error / Avalan have already been followed.
     </div>
-
     <span class="fade-link" onclick="fadeToggle('afterHoursMsg')">Weekend/After-Hours Support &amp; Escalations</span>
     <div id="afterHoursMsg" class="fade-message">
       <b>Down Store Incidents:</b><br>
