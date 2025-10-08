@@ -146,6 +146,70 @@
       0% { opacity: 1; }
       100% { opacity: 0; }
     }
+    /* Actions/Follow-Up animated input */
+    .animated-date-wrap {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 15px;
+      position: relative;
+    }
+    .animated-date-calendar {
+      border: 2px solid #222;
+      background: #fff;
+      border-radius: 7px;
+      padding: 7px;
+      box-shadow: 0 0 18px #222;
+      transition: border 0.4s, box-shadow 0.4s, background 0.4s, opacity 0.7s;
+      opacity: 1;
+      width: 180px;
+      font-size: 16px;
+      appearance: none;
+      outline: none;
+      position: relative;
+    }
+    .animated-date-calendar:focus, .animated-date-calendar.active {
+      border: 2.5px solid #007BFF;
+      background: #f8faff;
+      box-shadow: 0 0 25px #007BFF;
+      opacity: 1;
+    }
+    .animated-date-label {
+      color: #111;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .animated-time-picker {
+      border: 2px solid #222;
+      background: #fff;
+      border-radius: 7px;
+      padding: 7px 12px;
+      box-shadow: 0 0 18px #222;
+      transition: border 0.4s, box-shadow 0.4s, background 0.4s, opacity 0.7s;
+      opacity: 1;
+      width: 110px;
+      font-size: 16px;
+      appearance: none;
+      outline: none;
+      position: relative;
+      margin-left: 8px;
+    }
+    .animated-time-picker:focus, .animated-time-picker.active {
+      border: 2.5px solid #007BFF;
+      background: #f8faff;
+      box-shadow: 0 0 25px #007BFF;
+      opacity: 1;
+    }
+    /* Classic calendar icon */
+    .calendar-icon {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 5px;
+      width: 22px;
+      height: 22px;
+      background: url('data:image/svg+xml;utf8,<svg fill="black" height="22" viewBox="0 0 24 24" width="22" xmlns="http://www.w3.org/2000/svg"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.11-.89-2-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1zm-10 5h2v2H9v-2zm0 4h2v2H9v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z"/></svg>') no-repeat center center;
+      background-size: contain;
+    }
   </style>
   <script>
     // Wallpaper images array (wallpaper1.jpg to wallpaper15.jpg)
@@ -290,6 +354,22 @@
       });
       // Initialize Equipment dropdown on page load
       setEquipmentOptions([]);
+
+      // Actions/Follow-Up placeholder management
+      var actionOwnerEl = document.getElementById('actionOwner');
+      if (actionOwnerEl) togglePlaceholder(actionOwnerEl, actionOwnerEl.placeholder);
+      var callOutcomeEl = document.getElementById('callOutcome');
+      if (callOutcomeEl) togglePlaceholder(callOutcomeEl, callOutcomeEl.getAttribute('data-ph'));
+      if (actionOwnerEl) {
+        actionOwnerEl.addEventListener('input', function(){togglePlaceholder(this,this.placeholder)});
+        actionOwnerEl.addEventListener('focus', function(){togglePlaceholder(this,this.placeholder)});
+        actionOwnerEl.addEventListener('blur', function(){togglePlaceholder(this,this.placeholder)});
+      }
+      if (callOutcomeEl) {
+        callOutcomeEl.addEventListener('input', function(){togglePlaceholder(this,this.getAttribute('data-ph'))});
+        callOutcomeEl.addEventListener('focus', function(){togglePlaceholder(this,this.getAttribute('data-ph'))});
+        callOutcomeEl.addEventListener('blur', function(){togglePlaceholder(this,this.getAttribute('data-ph'))});
+      }
     });
 
     function showForm(sectionId) {
@@ -599,6 +679,41 @@ Troubleshooting step 5`;
         setTimeout(function(){ el.classList.add('show'); }, 10);
       }
     }
+    // Placeholder toggling for grayed-out text in textarea and Action Owner input
+    function togglePlaceholder(el, placeholderText) {
+      if (el.value.length === 0) {
+        el.placeholder = placeholderText;
+        el.style.color = '#aaa';
+      } else {
+        el.placeholder = '';
+        el.style.color = '#222';
+      }
+    }
+    function copyActionsFollowUpForm() {
+      const section = document.getElementById('actionsFollowUp');
+      const fields = section.querySelectorAll('input, textarea');
+      let formText = "";
+      fields.forEach(field => {
+        let labelText = field.placeholder || field.getAttribute("data-label") || field.id;
+        formText += labelText + " " + field.value + "\n";
+      });
+      navigator.clipboard.writeText(formText).then(showCopyMessage);
+    }
+    function clearActionsFollowUpForm() {
+      const section = document.getElementById('actionsFollowUp');
+      const fields = section.querySelectorAll('input, textarea');
+      fields.forEach(field => {
+        if (field.tagName.toLowerCase() === 'textarea') {
+          field.value = "";
+          togglePlaceholder(field, field.getAttribute('data-ph'));
+        } else if (field.tagName.toLowerCase() === 'input') {
+          field.value = "";
+          if (field.id === "actionOwner") {
+            togglePlaceholder(field, field.placeholder);
+          }
+        }
+      });
+    }
   </script>
 </head>
 <body>
@@ -606,6 +721,7 @@ Troubleshooting step 5`;
     <button onclick="showForm('update')">ServiceChannel/Update Template</button>
     <button onclick="showForm('strike')">3-Strike Rule Template</button>
     <button onclick="showForm('zoom')">Zoom Template</button>
+    <button onclick="showForm('actionsFollowUp')">Actions/Follow-Up Template</button>
   </div>
 
   <div class="form-container">
@@ -804,6 +920,56 @@ Thank you for your attention to this matter.</textarea>
       </div>
       <button class="copy-btn" onclick="generateZoomForm()">Copy Form</button>
       <button class="clear-btn" onclick="clearZoomForm()">Clear Form</button>
+    </div>
+
+    <!-- Actions/Follow-Up Template Section -->
+    <div id="actionsFollowUp" class="form-section">
+      <div class="form-box">
+        <h2>Actions/Follow-Up Template</h2>
+        <input type="text" placeholder="Name:" />
+        <input type="text" placeholder="Role:" />
+        <label class="animated-date-label" for="callDate">
+          <span class="calendar-icon"></span>Call Date:
+        </label>
+        <div class="animated-date-wrap">
+          <input 
+            type="date" 
+            id="callDate" 
+            class="animated-date-calendar"
+            data-label="Call Date"
+            onfocus="this.classList.add('active')" 
+            onblur="this.classList.remove('active')" 
+          />
+          <input 
+            type="time" 
+            id="callTime" 
+            class="animated-time-picker"
+            data-label="Call Time"
+            onfocus="this.classList.add('active')" 
+            onblur="this.classList.remove('active')" 
+          />
+        </div>
+        <input type="text" placeholder="Callback Number: (Best phone number to reach and callback at preferred time)" />
+        <input type="text" placeholder="Preferred Callback Time:" />
+        <input type="text" placeholder="Callback Attempt #:" />
+        <input 
+          type="text" 
+          id="actionOwner" 
+          placeholder="Action Owner: (e.g., Helpdesk, Escalation, FTS, FSS etc.)"
+          style="color:#aaa;"
+          data-label="Action Owner"
+          oninput="togglePlaceholder(this,'Action Owner: (e.g., Helpdesk, Escalation, FTS, FSS etc.)')"
+          onfocus="togglePlaceholder(this,'Action Owner: (e.g., Helpdesk, Escalation, FTS, FSS etc.)')"
+          onblur="togglePlaceholder(this,'Action Owner: (e.g., Helpdesk, Escalation, FTS, FSS etc.)')"
+        />
+        <textarea 
+          id="callOutcome" 
+          rows="4" 
+          data-ph="Outcome of the call summary and next steps"
+        ></textarea>
+        <button class="copy-btn" onclick="copyActionsFollowUpForm()">Copy Form</button>
+        <button class="clear-btn" onclick="clearActionsFollowUpForm()">Clear Form</button>
+      </div>
     </div>
   </div>
   <div style="position: absolute; top: 20px; right: 20px; width: 600px; padding: 15px; background-color: #ffffffcc; border: 2px solid #ccc; border-radius: 10px; font-family: Arial, sans-serif; font-size: 14px;">
