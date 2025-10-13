@@ -387,9 +387,9 @@
       document.getElementById('afuEstTime').textContent = estTime;
     }
 
-    function showCopyMessage(ts) {
+    function showCopyMessageText(message) {
       const copyMsg = document.getElementById('copyMessage');
-      copyMsg.innerText = ts;
+      copyMsg.innerText = message;
       copyMsg.style.display = 'block';
       setTimeout(() => {
         copyMsg.style.display = 'none';
@@ -425,7 +425,7 @@
       result = trimTrailingNewlines(result);
       const ts = getCurrentTimestampEST();
       result += "\n" + ts;
-      navigator.clipboard.writeText(result).then(() => showCopyMessage(ts));
+      navigator.clipboard.writeText(result).then(() => showCopyMessageText(ts));
     }
 
     function clearServiceChannelForm() {
@@ -442,20 +442,17 @@
       });
     }
 
+    // Modified: removed timestamp append for 3-Strike copy actions
     function copyStrikeForm() {
       const ticketText = document.getElementById('ticketUpdateContent').value;
-      const ts = getCurrentTimestampEST();
       let result = trimTrailingNewlines(ticketText);
-      result += "\n" + ts;
-      navigator.clipboard.writeText(result).then(() => showCopyMessage(ts));
+      navigator.clipboard.writeText(result).then(() => showCopyMessageText('Copied to clipboard!'));
     }
 
     function copyEmailContent() {
       const emailText = document.getElementById('emailTemplateContent').value;
-      const ts = getCurrentTimestampEST();
       let result = trimTrailingNewlines(emailText);
-      result += "\n" + ts;
-      navigator.clipboard.writeText(result).then(() => showCopyMessage(ts));
+      navigator.clipboard.writeText(result).then(() => showCopyMessageText('Copied to clipboard!'));
     }
 
     function copyZoomForm() {
@@ -492,7 +489,7 @@
       formText = trimTrailingNewlines(formText);
       const ts = getCurrentTimestampEST();
       formText += "\n" + ts;
-      navigator.clipboard.writeText(formText).then(() => showCopyMessage(ts));
+      navigator.clipboard.writeText(formText).then(() => showCopyMessageText(ts));
     }
 
     function clearZoomForm() {
@@ -548,10 +545,11 @@
     function afuContactChange() {
       document.getElementById('afuOtherContact').style.display = document.getElementById('afuContact').value === 'Others' ? 'block' : 'none';
     }
+
+    // Modified: removed timestamp append for Actions/Follow-Up copy
     function afuCopyForm() {
       const name = document.getElementById('afuName').value;
       const role = document.getElementById('afuRole').value;
-      const date = document.getElementById('afuDate').value;
       const est = document.getElementById('afuEstTime').textContent;
       const reach = document.getElementById('afuReach').value;
       let formText = `Name: ${name}\nRole: ${role}\nCall Date & Time: ${est}\nWere you able to reach the store? ${reach}\n`;
@@ -568,8 +566,6 @@
       const next = document.getElementById('afuNextAction').value;
       formText += `Action Owner: ${owner}\nAction Taken: ${taken}\nNext Action Required: ${next}`;
       formText = trimTrailingNewlines(formText);
-      const ts = getCurrentTimestampEST();
-      formText += "\n" + ts;
       navigator.clipboard.writeText(formText).then(() => {
         const msg = document.getElementById('afuCopyMsg');
         msg.style.display = 'block';
@@ -858,7 +854,7 @@ Thank you for your attention to this matter.</textarea>
       <button class="clear-btn" onclick="clearZoomForm()">Clear Form</button>
     </div>
 
-    <!-- Actions/Follow-Up Section (unchanged) -->
+    <!-- Actions/Follow-Up Section (unchanged except afuCopyForm behavior) -->
     <div id="actionsFollowUp" class="form-section">
       <div class="form-box">
         <h2>Actions/Follow-Up</h2>
