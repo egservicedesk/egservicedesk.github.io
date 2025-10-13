@@ -68,6 +68,7 @@
       box-sizing: border-box;
       font-size: 14px;
     }
+    input::placeholder, textarea::placeholder { color: #aaa; }
     .generate-btn, .copy-btn, .clear-btn {
       padding: 10px 20px;
       border: none;
@@ -89,6 +90,7 @@
       border: 1px solid #c3e6cb;
       border-radius: 5px;
       display: none;
+      z-index: 99999;
     }
     .fade-link {
       display: block;
@@ -146,61 +148,6 @@
       0% { opacity: 1; }
       100% { opacity: 0; }
     }
-    /* Actions/Follow-Up animated input */
-    .animated-date-wrap {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 15px;
-      position: relative;
-    }
-    .animated-date-calendar {
-      border: 2px solid #222;
-      background: #fff;
-      border-radius: 7px;
-      padding: 7px;
-      box-shadow: 0 0 18px #222;
-      transition: border 0.4s, box-shadow 0.4s, background 0.4s, opacity 0.7s;
-      opacity: 1;
-      width: 180px;
-      font-size: 16px;
-      appearance: none;
-      outline: none;
-      position: relative;
-    }
-    .animated-date-calendar:focus, .animated-date-calendar.active {
-      border: 2.5px solid #007BFF;
-      background: #f8faff;
-      box-shadow: 0 0 25px #007BFF;
-      opacity: 1;
-    }
-    .animated-date-label {
-      color: #111;
-      font-weight: bold;
-      font-size: 14px;
-    }
-    .animated-time-picker {
-      border: 2px solid #222;
-      background: #fff;
-      border-radius: 7px;
-      padding: 7px 12px;
-      box-shadow: 0 0 18px #222;
-      transition: border 0.4s, box-shadow 0.4s, background 0.4s, opacity 0.7s;
-      opacity: 1;
-      width: 110px;
-      font-size: 16px;
-      appearance: none;
-      outline: none;
-      position: relative;
-      margin-left: 8px;
-    }
-    .animated-time-picker:focus, .animated-time-picker.active {
-      border: 2.5px solid #007BFF;
-      background: #f8faff;
-      box-shadow: 0 0 25px #007BFF;
-      opacity: 1;
-    }
-    /* Classic calendar icon */
     .calendar-icon {
       display: inline-block;
       vertical-align: middle;
@@ -290,7 +237,7 @@
 
     function setEquipmentOptions(options) {
       const equipmentSelect = document.getElementById("zoomEquipment");
-      equipmentSelect.innerHTML = ''; // Clear all options
+      equipmentSelect.innerHTML = '';
       const defaultOption = document.createElement("option");
       defaultOption.value = "";
       defaultOption.textContent = "--Select Equipment--";
@@ -304,7 +251,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-      // Create two layers for fading effect
       const fadeBg1 = document.createElement('div');
       const fadeBg2 = document.createElement('div');
       fadeBg1.className = 'bg-fade';
@@ -331,9 +277,8 @@
         }
         currentIndex = nextIndex;
         active = 1 - active;
-      }, 60000); // 1 minute
+      }, 60000);
 
-      // Numeric validation listeners for Zoom Template
       document.getElementById('zoomTicket').addEventListener('input', function(e) {
         validateNumberInput(e, 'zoomTicket', 'zoomTicketError');
       });
@@ -341,7 +286,6 @@
         validateNumberInput(e, 'zoomStore', 'zoomStoreError');
       });
 
-      // Dynamic Equipment dropdown for Banner
       const bannerSelect = document.getElementById("zoomBanner");
       bannerSelect.addEventListener("change", function() {
         if (bannerSelect.value === "Cumberland Farms (CF)") {
@@ -352,10 +296,33 @@
           setEquipmentOptions([]);
         }
       });
-      // Initialize Equipment dropdown on page load
       setEquipmentOptions([]);
 
-      // Actions/Follow-Up placeholder management
+      // Placeholder toggles for Service Channel
+      [
+        { id: "updName", placeholder: "Name of caller/contact" },
+        { id: "updRole", placeholder: "Manager/Cashier/Staff/Etc." },
+        { id: "tsSteps", placeholder: "Include phone discussion and full TS Steps" },
+        { id: "updPeak", placeholder: "When do you get the most customers? In between what time in daily basis?" }
+      ].forEach(field => {
+        var el = document.getElementById(field.id);
+        if (!el) return;
+        el.placeholder = field.placeholder;
+        el.addEventListener('input', function () {
+          this.placeholder = this.value.length === 0 ? field.placeholder : '';
+          this.style.color = this.value.length === 0 ? '#aaa' : '#222';
+        });
+        el.addEventListener('focus', function () {
+          this.placeholder = '';
+        });
+        el.addEventListener('blur', function () {
+          this.placeholder = this.value.length === 0 ? field.placeholder : '';
+          this.style.color = this.value.length === 0 ? '#aaa' : '#222';
+        });
+        // Initial state
+        el.style.color = el.value.length === 0 ? '#aaa' : '#222';
+      });
+
       var actionOwnerEl = document.getElementById('actionOwner');
       if (actionOwnerEl) togglePlaceholder(actionOwnerEl, actionOwnerEl.placeholder);
       var callOutcomeEl = document.getElementById('callOutcome');
@@ -372,208 +339,98 @@
       }
     });
 
+    // Only show placeholder in tsSteps when changing Troubleshooting Category
+    function fillTroubleshootingSteps() {
+      const tsSteps = document.getElementById('tsSteps');
+      tsSteps.value = "";
+      tsSteps.placeholder = "Include phone discussion and full TS Steps";
+      tsSteps.style.color = "#aaa";
+    }
+
     function showForm(sectionId) {
       document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
     }
-    function fillTroubleshootingSteps() {
-      const category = document.getElementById('tsCategory').value;
-      const tsSteps = document.getElementById('tsSteps');
-      switch (category) {
-        case 'POS':
-          tsSteps.value = `Store is unable to proceed with Fuel transaction
-Error Message: 
-Type of Transaction: Post-Pay / Incomplete / Prepay
 
-Post-Pay
-Check the register's pump icon status
-Red or Grey dot (indicates a post-pay fuel transaction)
-Yellow or Red (should be ready to be selected and tendered normally)
-Grey (should be in progress on a register, or suspended)
-Have the store resume the transaction then tender it normally or void the transaction, to put it back on the pump again.
-Failed.
-Go to FCC > Station Control > Pump Level, select the problem transaction from the problem pump then Force Release or even Force Remove it.
-
-Incomplete:
-Does the pump icon appear clear, but when selecting the pump it shows on the top orange bar? 
-Or is there a Stop or ! symbol over the pump? This indicates the sale never completed, pump did not recognize that the nozzle was hung up.
-Lift the nozzle then select a grade before hanging it up securely.
-If that doesn't clear it, power cycle the dispenser using its corresponding breaker. 
-As a final resort, if necessary, go to FCC > Station Control > Pump Level, select the problem transaction from the problem pump then Force Release or even Force Remove it.
-
-Prepay:
-Is the pump icon showing a Black/Grey "P":
-Attempt to recall the transaction normally.
-There are two different ways to select the transaction to pull it into a sale in progress, depending on the tender used (cash/credit).  
-For cash prepays go to Function Panel > Prepay Recall, and select the problem transaction. 
-For credit prepays select P Recall beneath the pumps then select the pump.
-
-Dispensed prepay (grey)
-attempt to total it, if it's an unpumped prepay (black) that needs to be removed, line or trans void it.
-If a dispensed SmartPay prepay gives Dupe Trans 94 error when trying to total it, or OLA 103 at a v6308 OEMV site, we should remove the stuck transaction from the register.
-Quit POS32 to desktop.
-Open the file explorer and navigate to C:\\positive\\exe\\.
-Delete the .TRS file there before launching POS32 up again.
-
-Unable to recall and process normally
-there are 3 places to check for the problem transaction. (If it is in all 3, we should be able to to recall and process it normally).
-SR DB: (responsible for the Function Panel - Prepay Recall and Resume Transaction). Usually results in a Check Resume 239 error, see End of Shift Errors for troubleshooting.
-FCC > Viewers > Database > Prepay: stop the refresh, then select the problem transaction and Force Remove it.
-FCC > Station Control > Pump Level: go to that pump and select the problem non-paid transaction, and Force Remove it.`;
-          break;
-        case 'BOS':
-          tsSteps.value = `Issue: no power etc
-Error Message: Slow performance/no power
-Search BOS in Kaseya
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        case 'EOD':
-          tsSteps.value = `Issue:
-Error Message:
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        case 'Paperwork':
-          tsSteps.value = `Issue:
-Error Message:
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        case 'PDI/Handheld Scanner':
-          tsSteps.value = `Issue: Handheld locked up
-Perform Warm boot
-Perform Cold boot
-Perform Manual boot
-Check USB Lan connection
-Check the cradle`;
-          break;
-        case 'EPC/Pinpad':
-          tsSteps.value = `Issue:
-Error Message:
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        case 'Smartpay':
-          tsSteps.value = `Issue:
-Error Message:
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        case 'Promotions':
-          tsSteps.value = `Issue:
-Error Message:
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        case 'Pumps':
-          tsSteps.value = `Issue:
-Error Message:
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        case 'Fuel Systems':
-          tsSteps.value = `Issue:
-Error Message:
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        case 'Network':
-          tsSteps.value = `Issue:
-Error Message:
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        case 'Receipt Printer':
-          tsSteps.value = `Issue:
-Error Message:
-Troubleshooting step 1
-Troubleshooting step 2
-Troubleshooting step 3
-Troubleshooting step 4
-Troubleshooting step 5`;
-          break;
-        default:
-          tsSteps.value = "";
-      }
+    function getESTTimeFromDate(dateStr) {
+      if (!dateStr) return "";
+      const now = new Date();
+      const dt = new Date(dateStr + 'T' + now.toTimeString().slice(0,5));
+      const estOptions = { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true };
+      return new Intl.DateTimeFormat('en-US', estOptions).format(dt) + " EST";
     }
-    function showCopyMessage() {
+
+    function showEstPopup() {
+      const date = document.getElementById('afuDate').value;
+      if (!date) return;
+      const estTime = getESTTimeFromDate(date);
+      if (!estTime) return;
+      const popup = document.createElement('div');
+      popup.textContent = "Call Date & Time: " + estTime;
+      popup.style.position = "fixed";
+      popup.style.top = "50px";
+      popup.style.right = "50px";
+      popup.style.background = "#fff";
+      popup.style.border = "2px solid #007BFF";
+      popup.style.color = "#222";
+      popup.style.padding = "15px 30px";
+      popup.style.borderRadius = "8px";
+      popup.style.boxShadow = "0 6px 18px rgba(0,0,0,0.15)";
+      popup.style.fontSize = "18px";
+      popup.style.zIndex = "9999";
+      document.body.appendChild(popup);
+      setTimeout(() => {
+        popup.style.transition = "opacity 1s";
+        popup.style.opacity = "0";
+        setTimeout(() => document.body.removeChild(popup), 1000);
+      }, 3500);
+      document.getElementById('afuEstTime').textContent = estTime;
+    }
+
+    function showCopyMessage(ts) {
       const copyMsg = document.getElementById('copyMessage');
+      copyMsg.innerText = ts;
       copyMsg.style.display = 'block';
       setTimeout(() => {
         copyMsg.style.display = 'none';
       }, 2000);
     }
-    function getESTTime() {
-      const now = new Date();
-      const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/New_York',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      });
-      const parts = formatter.formatToParts(now);
-      const get = type => parts.find(p => p.type === type).value;
-      return `${get('month')}/${get('day')}/${get('year')} ${get('hour')}:${get('minute')}:${get('second')} EST`;
+
+    function getCurrentTimestampEST() {
+      const options = { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+      return new Intl.DateTimeFormat('en-US', options).format(new Date()) + " EST";
     }
-    function generateUpdateForm() {
-      const updateSection = document.getElementById('update');
-      const nextActionField = document.getElementById('nextAction');
-      if (!nextActionField.value.trim()) {
-        alert("Please fill out the 'Next Action Required' field.");
-        return;
-      }
-      const fields = updateSection.querySelectorAll('input, textarea, select');
-      let formText = "";
+
+    function trimTrailingNewlines(str) {
+      return str.replace(/[\r\n]+$/, "");
+    }
+
+    // Do not include placeholder as value when copying Service Channel form
+    function copyServiceChannelForm() {
+      const form = document.getElementById('updateForm');
+      const fields = form.querySelectorAll('input, textarea, select');
+      let result = '';
       fields.forEach(field => {
+        let value = field.value;
+        // Only use value, not placeholder
+        let labelText = "";
         if (field.tagName.toLowerCase() === 'select') {
-          const label = updateSection.querySelector('label[for="' + field.id + '"]');
-          const labelText = label ? label.textContent : field.id;
-          formText += labelText + " " + field.value + "\n";
-        } else if (field.id === 'nextAction') {
-          formText += "Next Action Required: " + field.value + "\n";
+          const label = form.querySelector('label[for="' + field.id + '"]');
+          labelText = label ? label.textContent : field.id;
         } else {
-          const labelText = field.placeholder || "";
-          formText += labelText + " " + field.value + "\n";
+          labelText = field.previousElementSibling?.textContent || "";
         }
+        result += labelText + " " + value + "\n";
       });
-      formText += getESTTime() + "\n";
-      navigator.clipboard.writeText(formText).then(showCopyMessage);
+      result = trimTrailingNewlines(result);
+      const ts = getCurrentTimestampEST();
+      result += "\n" + ts;
+      navigator.clipboard.writeText(result).then(() => showCopyMessage(ts));
     }
-    function clearUpdateForm() {
-      const updateSection = document.getElementById('update');
-      const fields = updateSection.querySelectorAll('input, textarea, select');
+
+    function clearServiceChannelForm() {
+      const form = document.getElementById('updateForm');
+      const fields = form.querySelectorAll('input, textarea, select');
       fields.forEach(field => {
         if (field.tagName.toLowerCase() === 'select') {
           field.selectedIndex = 0;
@@ -584,44 +441,24 @@ Troubleshooting step 5`;
         }
       });
     }
-    function generateStrikeForm() {
+
+    function copyStrikeForm() {
       const ticketText = document.getElementById('ticketUpdateContent').value;
-      navigator.clipboard.writeText(ticketText).then(showCopyMessage);
+      const ts = getCurrentTimestampEST();
+      let result = trimTrailingNewlines(ticketText);
+      result += "\n" + ts;
+      navigator.clipboard.writeText(result).then(() => showCopyMessage(ts));
     }
+
     function copyEmailContent() {
       const emailText = document.getElementById('emailTemplateContent').value;
-      navigator.clipboard.writeText(emailText).then(showCopyMessage);
+      const ts = getCurrentTimestampEST();
+      let result = trimTrailingNewlines(emailText);
+      result += "\n" + ts;
+      navigator.clipboard.writeText(result).then(() => showCopyMessage(ts));
     }
-    // Validation for Ticket # and Store # (numbers only)
-    function validateNumberInput(event, fieldId, errorId) {
-      const val = event.target.value;
-      const field = event.target;
-      const errorEl = document.getElementById(errorId);
 
-      if (val && !/^\d*$/.test(val)) {
-        field.classList.add('input-error');
-        errorEl.classList.remove('fadein'); // restart fade effect
-        errorEl.style.display = 'block';
-        errorEl.style.opacity = '1';
-
-        // Blink 5 times & fade error in 5 seconds
-        field.style.animation = 'blinkError 1s linear 0s 5 alternate';
-        errorEl.classList.add('fadein');
-        setTimeout(() => {
-          field.style.animation = '';
-          errorEl.classList.remove('fadein');
-          errorEl.style.display = 'none';
-          errorEl.style.opacity = '0';
-        }, 5000);
-      } else {
-        field.classList.remove('input-error');
-        field.style.animation = '';
-        errorEl.classList.remove('fadein');
-        errorEl.style.display = 'none';
-        errorEl.style.opacity = '0';
-      }
-    }
-    function generateZoomForm() {
+    function copyZoomForm() {
       const zoomSection = document.getElementById('zoom');
       const ticketInput = document.getElementById('zoomTicket');
       const storeInput = document.getElementById('zoomStore');
@@ -652,9 +489,12 @@ Troubleshooting step 5`;
           formText += labelText + " " + field.value + "\n";
         }
       });
-      formText += getESTTime() + "\n";
-      navigator.clipboard.writeText(formText).then(showCopyMessage);
+      formText = trimTrailingNewlines(formText);
+      const ts = getCurrentTimestampEST();
+      formText += "\n" + ts;
+      navigator.clipboard.writeText(formText).then(() => showCopyMessage(ts));
     }
+
     function clearZoomForm() {
       const zoomSection = document.getElementById('zoom');
       const fields = zoomSection.querySelectorAll('input, textarea, select');
@@ -668,6 +508,7 @@ Troubleshooting step 5`;
         }
       });
     }
+
     function fadeToggle(id) {
       var el = document.getElementById(id);
       if (!el) return;
@@ -679,7 +520,6 @@ Troubleshooting step 5`;
         setTimeout(function(){ el.classList.add('show'); }, 10);
       }
     }
-    // Placeholder toggling for grayed-out text in textarea and Action Owner input
     function togglePlaceholder(el, placeholderText) {
       if (el.value.length === 0) {
         el.placeholder = placeholderText;
@@ -689,78 +529,172 @@ Troubleshooting step 5`;
         el.style.color = '#222';
       }
     }
-    function copyActionsFollowUpForm() {
-      const section = document.getElementById('actionsFollowUp');
-      const fields = section.querySelectorAll('input, textarea');
-      let formText = "";
-      fields.forEach(field => {
-        let labelText = field.placeholder || field.getAttribute("data-label") || field.id;
-        formText += labelText + " " + field.value + "\n";
-      });
-      navigator.clipboard.writeText(formText).then(showCopyMessage);
+
+    function afuReachChange() {
+      const v = document.getElementById('afuReach').value;
+      document.getElementById('afuCallbackWrap').style.display = v === 'No' ? 'block' : 'none';
+      document.getElementById('afuContactWrap').style.display = v === 'No' ? 'block' : 'none';
     }
-    function clearActionsFollowUpForm() {
-      const section = document.getElementById('actionsFollowUp');
-      const fields = section.querySelectorAll('input, textarea');
-      fields.forEach(field => {
-        if (field.tagName.toLowerCase() === 'textarea') {
-          field.value = "";
-          togglePlaceholder(field, field.getAttribute('data-ph'));
-        } else if (field.tagName.toLowerCase() === 'input') {
-          field.value = "";
-          if (field.id === "actionOwner") {
-            togglePlaceholder(field, field.placeholder);
-          }
+    function afuCallbackAttemptChange() {
+      const v = document.getElementById('afuCallbackAttempt').value;
+      let txt = '';
+      if (v === '1st' || v === '2nd') {
+        txt = "Callback store. No response. Phone kept ringing/Call dropped. Left a message in Kaseya. Sent an email to the store.";
+      } else if (v === '3rd') {
+        txt = "Callback store. No response. phone kept ringing/call dropped.\nLeft a message in Kaseya. Sent an email to DM and store 3rd and Final attempt.";
+      }
+      document.getElementById('afuActionTaken').value = txt;
+    }
+    function afuContactChange() {
+      document.getElementById('afuOtherContact').style.display = document.getElementById('afuContact').value === 'Others' ? 'block' : 'none';
+    }
+    function afuCopyForm() {
+      const name = document.getElementById('afuName').value;
+      const role = document.getElementById('afuRole').value;
+      const date = document.getElementById('afuDate').value;
+      const est = document.getElementById('afuEstTime').textContent;
+      const reach = document.getElementById('afuReach').value;
+      let formText = `Name: ${name}\nRole: ${role}\nCall Date & Time: ${est}\nWere you able to reach the store? ${reach}\n`;
+      if (reach === 'No') {
+        const callback = document.getElementById('afuCallbackAttempt').value;
+        const contact = document.getElementById('afuContact').value;
+        formText += `Callback Attempt: ${callback}\nContact Interaction: ${contact}\n`;
+        if (contact === 'Others') {
+          formText += `Contact Explanation: ${document.getElementById('afuOtherContact').value}\n`;
         }
+      }
+      const owner = document.getElementById('afuActionOwner').value;
+      const taken = document.getElementById('afuActionTaken').value;
+      const next = document.getElementById('afuNextAction').value;
+      formText += `Action Owner: ${owner}\nAction Taken: ${taken}\nNext Action Required: ${next}`;
+      formText = trimTrailingNewlines(formText);
+      const ts = getCurrentTimestampEST();
+      formText += "\n" + ts;
+      navigator.clipboard.writeText(formText).then(() => {
+        const msg = document.getElementById('afuCopyMsg');
+        msg.style.display = 'block';
+        msg.textContent = 'Copied to clipboard!';
+        setTimeout(() => { msg.style.display = 'none'; }, 2000);
       });
+    }
+    function afuClearForm() {
+      document.getElementById('afuName').value = "";
+      document.getElementById('afuRole').value = "";
+      document.getElementById('afuDate').value = "";
+      document.getElementById('afuEstTime').textContent = '';
+      document.getElementById('afuReach').selectedIndex = 0;
+      document.getElementById('afuCallbackWrap').style.display = 'none';
+      document.getElementById('afuCallbackAttempt').selectedIndex = 0;
+      document.getElementById('afuContactWrap').style.display = 'none';
+      document.getElementById('afuContact').selectedIndex = 0;
+      document.getElementById('afuOtherContact').value = "";
+      document.getElementById('afuOtherContact').style.display = 'none';
+      document.getElementById('afuActionOwner').value = "";
+      document.getElementById('afuActionTaken').value = "";
+      document.getElementById('afuNextAction').value = "";
+      document.getElementById('afuCopyMsg').style.display = 'none';
+    }
+    function validateNumberInput(event, fieldId, errorId) {
+      const val = event.target.value;
+      const field = event.target;
+      const errorEl = document.getElementById(errorId);
+
+      if (val && !/^\d*$/.test(val)) {
+        field.classList.add('input-error');
+        errorEl.classList.remove('fadein');
+        errorEl.style.display = 'block';
+        errorEl.style.opacity = '1';
+        field.style.animation = 'blinkError 1s linear 0s 5 alternate';
+        errorEl.classList.add('fadein');
+        setTimeout(() => {
+          field.style.animation = '';
+          errorEl.classList.remove('fadein');
+          errorEl.style.display = 'none';
+          errorEl.style.opacity = '0';
+        }, 5000);
+      } else {
+        field.classList.remove('input-error');
+        field.style.animation = '';
+        errorEl.classList.remove('fadein');
+        errorEl.style.display = 'none';
+        errorEl.style.opacity = '0';
+      }
     }
   </script>
 </head>
 <body>
   <div class="sidebar">
-    <button onclick="showForm('update')">ServiceChannel/Update Template</button>
+    <button onclick="showForm('update')">Service Channel</button>
     <button onclick="showForm('strike')">3-Strike Rule Template</button>
-    <button onclick="showForm('zoom')">Zoom Template</button>
-    <button onclick="showForm('actionsFollowUp')">Actions/Follow-Up Template</button>
+    <button onclick="showForm('zoom')">Zoom/Teams Channel</button>
+    <button onclick="showForm('actionsFollowUp')">Actions/Follow-Up</button>
   </div>
 
   <div class="form-container">
-    <!-- ServiceChannel/Update Template Section -->
+    <!-- Service Channel Section -->
     <div id="update" class="form-section active">
       <div class="form-box">
-        <h2>ServiceChannel/Update Template</h2>
-        <input type="text" placeholder="Name: (Name of caller/contact)" />
-        <input type="text" placeholder="Role: (Manager/Cashier/Staff/Etc.)" />
-        <input type="text" placeholder="Store peak hours:" />
-        <input type="text" placeholder="Available working hours:" />
-        <input type="text" placeholder="Any related/existing ticket:" />
-        <input type="text" placeholder="What specific error occurred:" />
-        <input type="text" placeholder="On which device:" />
-        <input type="text" placeholder="Which system/equipment is affected:" />
-        <input type="text" placeholder="How many device/s affected:" />
-        <input type="text" placeholder="When did the issue start:" />
-        <label for="tsCategory">Troubleshooting Category:</label>
-        <select id="tsCategory" onchange="fillTroubleshootingSteps()">
-          <option value="">--Select--</option>
-          <option value="POS">POS</option>
-          <option value="BOS">BOS</option>
-          <option value="EOD">EOD</option>
-          <option value="Paperwork">Paperwork</option>
-          <option value="PDI/Handheld Scanner">PDI/Handheld Scanner</option>
-          <option value="EPC/Pinpad">EPC/Pinpad</option>
-          <option value="Smartpay">Smartpay</option>
-          <option value="Promotions">Promotions</option>
-          <option value="Pumps">Pumps</option>
-          <option value="Fuel Systems">Fuel Systems</option>
-          <option value="Network">Network</option>
-          <option value="Receipt Printer">Receipt Printer</option>
-        </select>
-        <textarea id="tsSteps" rows="10" placeholder="What actions/troubleshooting steps have been taken: (Include phone discussion and full TS Steps)"></textarea>
-        <label for="nextAction">Next Action Required: <span style="color:red">*</span></label>
-        <textarea id="nextAction" rows="4" placeholder="What is the next action needed / Assign to Store Escalation / L2 Assistance /  Follow-up Vendor / Callback for confirmation"required></textarea>
-        <input type="text" placeholder="KB Article/URL:" />
-        <button class="copy-btn" onclick="generateUpdateForm()">Copy Form</button>
-        <button class="clear-btn" onclick="clearUpdateForm()">Clear Form</button>
+        <h2>Service Channel</h2>
+        <form id="updateForm" autocomplete="off">
+          <label for="updName">Name:</label>
+          <input type="text" id="updName" name="updName" placeholder="Name of caller/contact" />
+
+          <label for="updRole">Role:</label>
+          <input type="text" id="updRole" name="updRole" placeholder="Manager/Cashier/Staff/Etc." />
+
+          <label for="updPeak">Store peak hours:</label>
+          <input type="text" id="updPeak" name="updPeak" placeholder="When do you get the most customers? In between what time in daily basis?" />
+
+          <label for="updWorking">Available working hours:</label>
+          <input type="text" id="updWorking" name="updWorking" />
+
+          <label for="updRelated">Any related/existing ticket:</label>
+          <input type="text" id="updRelated" name="updRelated" />
+
+          <label for="updError">What specific error occurred:</label>
+          <input type="text" id="updError" name="updError" />
+
+          <label for="updDevice">On which device:</label>
+          <input type="text" id="updDevice" name="updDevice" />
+
+          <label for="updSystem">Which system/equipment is affected:</label>
+          <input type="text" id="updSystem" name="updSystem" />
+
+          <label for="updAffected">How many device/s affected:</label>
+          <input type="text" id="updAffected" name="updAffected" />
+
+          <label for="updStarted">When did the issue start:</label>
+          <input type="text" id="updStarted" name="updStarted" />
+
+          <label for="tsCategory">Troubleshooting Category:</label>
+          <select id="tsCategory" name="tsCategory" onchange="fillTroubleshootingSteps()">
+            <option value="">--Select--</option>
+            <option value="POS">POS</option>
+            <option value="BOS">BOS</option>
+            <option value="EOD">EOD</option>
+            <option value="Paperwork">Paperwork</option>
+            <option value="PDI/Handheld Scanner">PDI/Handheld Scanner</option>
+            <option value="EPC/Pinpad">EPC/Pinpad</option>
+            <option value="Smartpay">Smartpay</option>
+            <option value="Promotions">Promotions</option>
+            <option value="Pumps">Pumps</option>
+            <option value="Fuel Systems">Fuel Systems</option>
+            <option value="Network">Network</option>
+            <option value="Receipt Printer">Receipt Printer</option>
+          </select>
+
+          <label for="tsSteps">What actions/troubleshooting steps have been taken:</label>
+          <textarea id="tsSteps" name="tsSteps" rows="10" placeholder="Include phone discussion and full TS Steps"></textarea>
+
+          <label for="nextAction">Next Action Required:</label>
+          <textarea id="nextAction" name="nextAction" rows="4" required placeholder="What is the next action needed / Assign to Store Escalation / L2 Assistance /  Follow-up Vendor / Callback for confirmation"></textarea>
+
+          <label for="updKB">KB Article/URL:</label>
+          <input type="text" id="updKB" name="updKB" />
+
+          <button type="button" class="copy-btn" onclick="copyServiceChannelForm()">Copy Form</button>
+          <button type="button" class="clear-btn" onclick="clearServiceChannelForm()">Clear Form</button>
+        </form>
       </div>
     </div>
 
@@ -778,7 +712,7 @@ Callback store to gather additional details
 Callback store to confirm if issue has been resolved
 Close ticket after no response from store or DM after 3rd and Final attempt.</textarea>
       </div>
-      <button class="copy-btn" onclick="generateStrikeForm()">Copy Form</button>
+      <button class="copy-btn" onclick="copyStrikeForm()">Copy Form</button>
       <div class="form-box">
         <h3>Email Template</h3>
         <textarea id="emailTemplateContent" rows="18">Subject: (1st, 2nd, 3rd) Follow-Up on Ticket #[TICKET NUMBER] – Store Action Required
@@ -803,10 +737,10 @@ Thank you for your attention to this matter.</textarea>
       <button class="copy-btn" onclick="copyEmailContent()">Copy Email</button>
     </div>
 
-    <!-- Zoom Template Section with Banner dropdown -->
+    <!-- Zoom/Teams Channel Section with Banner dropdown -->
     <div id="zoom" class="form-section">
       <div class="form-box">
-        <h2>Zoom Template</h2>
+        <h2>Zoom/Teams Channel</h2>
         <h3>Ticket Information</h3>
         <input type="text" placeholder="Ticket Description:" />
         <input type="text" placeholder="Ticket #:" id="zoomTicket" />
@@ -900,13 +834,14 @@ Thank you for your attention to this matter.</textarea>
         </select>
         <label for="zoomEquipment">Equipment:</label>
         <select id="zoomEquipment">
-          <!-- Options will be populated by JS -->
         </select>
       </div>
       <div class="form-box">
         <h3>Details</h3>
-        <input type="text" placeholder="Name: (Name of caller/contact)" />
-        <input type="text" placeholder="Role: (Manager/Cashier/Staff/Etc.)" />
+        <label for="zoomName">Name:</label>
+        <input type="text" id="zoomName" placeholder="Name of caller/contact" />
+        <label for="zoomRole">Role:</label>
+        <input type="text" id="zoomRole" placeholder="Manager/Cashier/Staff/etc." />
         <input type="text" placeholder="Store peak hours:" />
         <input type="text" placeholder="Available operating/working hours:" />
         <input type="text" placeholder="Any related/existing ticket:" />
@@ -915,60 +850,74 @@ Thank you for your attention to this matter.</textarea>
         <input type="text" placeholder="Which system/equipment is affected:" />
         <input type="text" placeholder="How many device/s affected:" />
         <input type="text" placeholder="When did the Issue start:" />
-        <textarea placeholder="What actions/troubleshooting steps have been taken: (Include phone discussion and full TS Steps)" rows="5"></textarea>
+        <label for="zoomTsSteps">What actions/troubleshooting steps have been taken:</label>
+        <textarea id="zoomTsSteps" placeholder="Include phone discussion and full TS Steps" rows="5"></textarea>
         <input type="text" placeholder="KB Article/URL:" />
       </div>
-      <button class="copy-btn" onclick="generateZoomForm()">Copy Form</button>
+      <button class="copy-btn" onclick="copyZoomForm()">Copy Form</button>
       <button class="clear-btn" onclick="clearZoomForm()">Clear Form</button>
     </div>
 
-    <!-- Actions/Follow-Up Template Section -->
+    <!-- Actions/Follow-Up Section (unchanged) -->
     <div id="actionsFollowUp" class="form-section">
       <div class="form-box">
-        <h2>Actions/Follow-Up Template</h2>
-        <input type="text" placeholder="Name:" />
-        <input type="text" placeholder="Role:" />
-        <label class="animated-date-label" for="callDate">
-          <span class="calendar-icon"></span>Call Date:
-        </label>
-        <div class="animated-date-wrap">
-          <input 
-            type="date" 
-            id="callDate" 
-            class="animated-date-calendar"
-            data-label="Call Date"
-            onfocus="this.classList.add('active')" 
-            onblur="this.classList.remove('active')" 
-          />
-          <input 
-            type="time" 
-            id="callTime" 
-            class="animated-time-picker"
-            data-label="Call Time"
-            onfocus="this.classList.add('active')" 
-            onblur="this.classList.remove('active')" 
-          />
+        <h2>Actions/Follow-Up</h2>
+        <label for="afuName">Name:</label>
+        <input type="text" id="afuName" placeholder="Name:" />
+
+        <label for="afuRole">Role:</label>
+        <input type="text" id="afuRole" placeholder="Role:" />
+
+        <label for="afuDate">Call Date & Time:</label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="calendar-icon"></span>
+          <input type="date" id="afuDate" style="width:140px;" onchange="showEstPopup()" oninput="showEstPopup()">
+          <span id="afuEstTime" style="font-size:15px;color:#007BFF;margin-left:12px;"></span>
         </div>
-        <input type="text" placeholder="Callback Number: (Best phone number to reach and callback at preferred time)" />
-        <input type="text" placeholder="Preferred Callback Time:" />
-        <input type="text" placeholder="Callback Attempt #:" />
-        <input 
-          type="text" 
-          id="actionOwner" 
-          placeholder="Action Owner: (e.g., Helpdesk, Escalation, FTS, FSS etc.)"
-          style="color:#aaa;"
-          data-label="Action Owner"
-          oninput="togglePlaceholder(this,'Action Owner: (e.g., Helpdesk, Escalation, FTS, FSS etc.)')"
-          onfocus="togglePlaceholder(this,'Action Owner: (e.g., Helpdesk, Escalation, FTS, FSS etc.)')"
-          onblur="togglePlaceholder(this,'Action Owner: (e.g., Helpdesk, Escalation, FTS, FSS etc.)')"
-        />
-        <textarea 
-          id="callOutcome" 
-          rows="4" 
-          data-ph="Outcome of the call summary and next steps"
-        ></textarea>
-        <button class="copy-btn" onclick="copyActionsFollowUpForm()">Copy Form</button>
-        <button class="clear-btn" onclick="clearActionsFollowUpForm()">Clear Form</button>
+
+        <label for="afuReach">Were you able to reach the store?</label>
+        <select id="afuReach" onchange="afuReachChange()">
+          <option value="">--Select--</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <div id="afuCallbackWrap" style="display:none;">
+          <label for="afuCallbackAttempt">Callback Attempt:</label>
+          <select id="afuCallbackAttempt" onchange="afuCallbackAttemptChange()">
+            <option value="">--Select--</option>
+            <option value="1st">1st</option>
+            <option value="2nd">2nd</option>
+            <option value="3rd">3rd</option>
+          </select>
+        </div>
+
+        <div id="afuContactWrap" style="display:none;">
+          <label for="afuContact">Contact Interaction:</label>
+          <select id="afuContact" onchange="afuContactChange()">
+            <option value="">--Select--</option>
+            <option value="Phone">Phone</option>
+            <option value="Email">Email</option>
+            <option value="Kaseya">Kaseya</option>
+            <option value="Others">Others</option>
+          </select>
+          <input type="text" id="afuOtherContact" placeholder="Please explain:" style="display:none;">
+        </div>
+
+        <label for="afuActionOwner">
+          Action Owner:
+        </label>
+        <input type="text" id="afuActionOwner" placeholder="e.g., Helpdesk, Escalation, FTS, FSS etc." required />
+
+        <label for="afuActionTaken">Action Taken:</label>
+        <textarea id="afuActionTaken" rows="4" placeholder="Provide complete details"></textarea>
+
+        <label for="afuNextAction">Next Action Required:</label>
+        <textarea id="afuNextAction" rows="3" placeholder="Action needed"></textarea>
+
+        <button type="button" class="copy-btn" onclick="afuCopyForm()">Copy Form</button>
+        <button type="button" class="clear-btn" onclick="afuClearForm()">Clear Form</button>
+        <div id="afuCopyMsg" style="display:none;margin-top:10px;color:#28a745;">Copied to clipboard!</div>
       </div>
     </div>
   </div>
