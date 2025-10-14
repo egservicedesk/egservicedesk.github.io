@@ -159,80 +159,25 @@
     }
   </style>
   <script>
-    // Wallpaper images array (wallpaper1.jpg to wallpaper15.jpg)
     const images = [
-      'wallpaper1.jpg',
-      'wallpaper2.jpg',
-      'wallpaper3.jpg',
-      'wallpaper4.jpg',
-      'wallpaper5.jpg',
-      'wallpaper6.jpg',
-      'wallpaper7.jpg',
-      'wallpaper8.jpg',
-      'wallpaper9.jpg',
-      'wallpaper10.jpg',
-      'wallpaper11.jpg',
-      'wallpaper12.jpg',
-      'wallpaper13.jpg',
-      'wallpaper14.jpg',
-      'wallpaper15.jpg'
+      'wallpaper1.jpg','wallpaper2.jpg','wallpaper3.jpg','wallpaper4.jpg','wallpaper5.jpg',
+      'wallpaper6.jpg','wallpaper7.jpg','wallpaper8.jpg','wallpaper9.jpg','wallpaper10.jpg',
+      'wallpaper11.jpg','wallpaper12.jpg','wallpaper13.jpg','wallpaper14.jpg','wallpaper15.jpg'
     ];
     let currentIndex = Math.floor(Math.random() * images.length);
 
-    // Equipment option lists
     const cfEquipmentOptions = [
-      "Bos hardware",
-      "Bos software",
-      "Brinks/Tidel safe",
-      "Car wash",
-      "Communication",
-      "Digital gas price sign",
-      "Digital menu board",
-      "Digital sale sign",
-      "Electronic tenders",
-      "Gas dispenser problems",
-      "Hto terminals",
-      "Label maker",
-      "Loyalty",
-      "Money order machine",
-      "Non-IT information request",
-      "Other systems",
-      "Password resets",
-      "Pdi",
-      "Pdi handheld",
-      "Pdi paperwork",
-      "Phonelines",
-      "Pos hardware",
-      "Pos hardware - self checkout",
-      "Pos software",
-      "Power problems",
-      "Skip co",
-      "Store music system-AIM",
-      "Tablets",
-      "Teammate assistance",
-      "Titan"
+      "Bos hardware","Bos software","Brinks/Tidel safe","Car wash","Communication","Digital gas price sign",
+      "Digital menu board","Digital sale sign","Electronic tenders","Gas dispenser problems","Hto terminals",
+      "Label maker","Loyalty","Money order machine","Non-IT information request","Other systems","Password resets",
+      "Pdi","Pdi handheld","Pdi paperwork","Phonelines","Pos hardware","Pos hardware - self checkout","Pos software",
+      "Power problems","Skip co","Store music system-AIM","Tablets","Teammate assistance","Titan"
     ];
     const egEquipmentOptions = [
-      "EG – Back office",
-      "EG – Carwash",
-      "EG – Credit/debit",
-      "EG – Digital menu board",
-      "EG – Digital sale sign",
-      "EG – Gas dispenser problems",
-      "EG – Gift cards",
-      "EG – Loyalty",
-      "EG – Network",
-      "EG – Non-IT information request",
-      "EG – Password resets",
-      "EG – Pdi handheld",
-      "EG – Pdi paperwork",
-      "EG – Phone line",
-      "EG – Pos",
-      "EG – Power problems",
-      "EG – Pricebook",
-      "EG – Pricebook (franchisee only)",
-      "EG – Printers",
-      "EG – Western union"
+      "EG – Back office","EG – Carwash","EG – Credit/debit","EG – Digital menu board","EG – Digital sale sign",
+      "EG – Gas dispenser problems","EG – Gift cards","EG – Loyalty","EG – Network","EG – Non-IT information request",
+      "EG – Password resets","EG – Pdi handheld","EG – Pdi paperwork","EG – Phone line","EG – Pos","EG – Power problems",
+      "EG – Pricebook","EG – Pricebook (franchisee only)","EG – Printers","EG – Western union"
     ];
 
     function setEquipmentOptions(options) {
@@ -298,7 +243,6 @@
       });
       setEquipmentOptions([]);
 
-      // Placeholder toggles for Service Channel
       [
         { id: "updName", placeholder: "Name of caller/contact" },
         { id: "updRole", placeholder: "Manager/Cashier/Staff/Etc." },
@@ -312,14 +256,11 @@
           this.placeholder = this.value.length === 0 ? field.placeholder : '';
           this.style.color = this.value.length === 0 ? '#aaa' : '#222';
         });
-        el.addEventListener('focus', function () {
-          this.placeholder = '';
-        });
+        el.addEventListener('focus', function () { this.placeholder = ''; });
         el.addEventListener('blur', function () {
           this.placeholder = this.value.length === 0 ? field.placeholder : '';
           this.style.color = this.value.length === 0 ? '#aaa' : '#222';
         });
-        // Initial state
         el.style.color = el.value.length === 0 ? '#aaa' : '#222';
       });
 
@@ -339,7 +280,6 @@
       }
     });
 
-    // Only show placeholder in tsSteps when changing Troubleshooting Category
     function fillTroubleshootingSteps() {
       const tsSteps = document.getElementById('tsSteps');
       tsSteps.value = "";
@@ -391,9 +331,7 @@
       const copyMsg = document.getElementById('copyMessage');
       copyMsg.innerText = message;
       copyMsg.style.display = 'block';
-      setTimeout(() => {
-        copyMsg.style.display = 'none';
-      }, 2000);
+      setTimeout(() => { copyMsg.style.display = 'none'; }, 2000);
     }
 
     function getCurrentTimestampEST() {
@@ -405,14 +343,12 @@
       return str.replace(/[\r\n]+$/, "");
     }
 
-    // Do not include placeholder as value when copying Service Channel form
     function copyServiceChannelForm() {
       const form = document.getElementById('updateForm');
       const fields = form.querySelectorAll('input, textarea, select');
       let result = '';
       fields.forEach(field => {
         let value = field.value;
-        // Only use value, not placeholder
         let labelText = "";
         if (field.tagName.toLowerCase() === 'select') {
           const label = form.querySelector('label[for="' + field.id + '"]');
@@ -442,7 +378,7 @@
       });
     }
 
-    // Modified: removed timestamp append for 3-Strike copy actions
+    // 3-Strike copy actions: no timestamp appended
     function copyStrikeForm() {
       const ticketText = document.getElementById('ticketUpdateContent').value;
       let result = trimTrailingNewlines(ticketText);
@@ -546,13 +482,14 @@
       document.getElementById('afuOtherContact').style.display = document.getElementById('afuContact').value === 'Others' ? 'block' : 'none';
     }
 
-    // Modified: removed timestamp append for Actions/Follow-Up copy
+    // Modified: removed timestamp append and added "Actions/Follow-Up" header when copying
     function afuCopyForm() {
       const name = document.getElementById('afuName').value;
       const role = document.getElementById('afuRole').value;
       const est = document.getElementById('afuEstTime').textContent;
       const reach = document.getElementById('afuReach').value;
-      let formText = `Name: ${name}\nRole: ${role}\nCall Date & Time: ${est}\nWere you able to reach the store? ${reach}\n`;
+      let formText = "Actions/Follow-Up\n";
+      formText += `Name: ${name}\nRole: ${role}\nCall Date & Time: ${est}\nWere you able to reach the store? ${reach}\n`;
       if (reach === 'No') {
         const callback = document.getElementById('afuCallbackAttempt').value;
         const contact = document.getElementById('afuContact').value;
@@ -627,7 +564,6 @@
   </div>
 
   <div class="form-container">
-    <!-- Service Channel Section -->
     <div id="update" class="form-section active">
       <div class="form-box">
         <h2>Service Channel</h2>
@@ -694,7 +630,6 @@
       </div>
     </div>
 
-    <!-- 3-Strike Rule Template Section -->
     <div id="strike" class="form-section">
       <div class="form-box">
         <h2>3-Strike Rule Template</h2>
@@ -733,7 +668,6 @@ Thank you for your attention to this matter.</textarea>
       <button class="copy-btn" onclick="copyEmailContent()">Copy Email</button>
     </div>
 
-    <!-- Zoom/Teams Channel Section with Banner dropdown -->
     <div id="zoom" class="form-section">
       <div class="form-box">
         <h2>Zoom/Teams Channel</h2>
@@ -854,7 +788,6 @@ Thank you for your attention to this matter.</textarea>
       <button class="clear-btn" onclick="clearZoomForm()">Clear Form</button>
     </div>
 
-    <!-- Actions/Follow-Up Section (unchanged except afuCopyForm behavior) -->
     <div id="actionsFollowUp" class="form-section">
       <div class="form-box">
         <h2>Actions/Follow-Up</h2>
@@ -917,6 +850,7 @@ Thank you for your attention to this matter.</textarea>
       </div>
     </div>
   </div>
+
   <div style="position: absolute; top: 20px; right: 20px; width: 600px; padding: 15px; background-color: #ffffffcc; border: 2px solid #ccc; border-radius: 10px; font-family: Arial, sans-serif; font-size: 14px;">
     <h3>📌Reminders📌</h3>
     <span class="fade-link" onclick="fadeToggle('fssMsg')">FSS handles Pump &amp; Card Reader Hardware Issues</span>
@@ -990,6 +924,7 @@ Thank you for your attention to this matter.</textarea>
       </ul>
     </div>
   </div>
+
   <div id="copyMessage">Copied to clipboard!</div>
 </body>
 </html>
