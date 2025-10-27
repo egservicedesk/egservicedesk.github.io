@@ -28,7 +28,16 @@
       background-repeat: no-repeat;
       background-position: center center;
       background-size: cover;
+      background-color: #f3f4f6; /* fallback color */
     }
+
+    /* Prevent flex children from overflowing when zooming/shrinking */
+    .form-container {
+      flex-grow: 1;
+      max-width: 900px;
+      min-width: 0; /* allow the form to shrink inside the flex row */
+    }
+
     .sidebar {
       width: 200px;
       margin-right: 20px;
@@ -44,18 +53,15 @@
       cursor: pointer;
       font-size: 14px;
     }
-    .form-container {
-      flex-grow: 1;
-      max-width: 800px;
-    }
+
     .form-section { display: none; }
     .form-section.active { display: block; }
     .form-box {
-      background-color: rgba(255, 255, 255, 0.85);
+      background-color: rgba(255, 255, 255, 0.95);
       border-radius: 8px;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      box-shadow: 0 0 10px rgba(0,0,0,0.12);
     }
     h2, h3 { margin-top: 0; }
     label { font-weight: bold; display: block; margin-bottom: 5px; }
@@ -100,7 +106,15 @@
       font-weight: bold;
       text-decoration: underline;
       font-size: 16px;
+
+      /* ensure link text wraps and doesn't overflow the reminders box */
+      white-space: normal;           /* allow wrapping across lines */
+      word-break: break-word;       /* break long words / URLs if needed */
+      overflow-wrap: anywhere;      /* break anywhere when necessary */
+      max-width: 100%;              /* never exceed container width */
+      box-sizing: border-box;
     }
+
     .fade-message {
       display: none;
       opacity: 0;
@@ -113,7 +127,13 @@
       margin-left: 10px;
       font-size: 14px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-      max-width: 600px;
+      max-width: 100%; /* expand to available width of reminders */
+      box-sizing: border-box;
+
+      /* make content wrap within the message */
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
     .fade-message.show {
       display: block;
@@ -157,8 +177,81 @@
       background: url('data:image/svg+xml;utf8,<svg fill="black" height="22" viewBox="0 0 24 24" width="22" xmlns="http://www.w3.org/2000/svg"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.11-.89-2-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1zm-10 5h2v2H9v-2zm0 4h2v2H9v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z"/></svg>') no-repeat center center;
       background-size: contain;
     }
+    /* small helper for visually-hidden labels (keeps layout same but accessible) */
+    .sr-only {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+
+    /* ---------- Reminders panel (prevents overlap) ---------- */
+    .reminders {
+      position: sticky; /* stays visible while scrolling but participates in flow */
+      top: 20px;
+      align-self: flex-start;
+      width: min(36rem, 34%);
+      max-width: 620px;
+      margin-left: 20px;
+      box-sizing: border-box;
+
+      /* keep it inside viewport and scroll internally if content is large */
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+
+      /* visual */
+      padding: 15px;
+      background-color: rgba(255,255,255,0.95);
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      z-index: 20;
+
+      /* ensure children wrap and long words/URLs don't overflow */
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* ensure anchor tags inside reminders wrap */
+    .reminders a {
+      color: #007BFF;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      hyphens: auto;
+      text-decoration: underline;
+    }
+
+    /* responsive tweaks */
+    @media (max-width: 1200px) {
+      /* stack layout on narrower screens / heavy zoom so reminders never overlay form */
+      body { padding: 12px; flex-direction: column; align-items: stretch; }
+      .sidebar { width: 100%; display:flex; gap:8px; margin-bottom: 12px; }
+      .sidebar button { flex:1; font-size:13px; padding:8px; }
+      .form-container { max-width: 100%; }
+
+      .reminders {
+        position: static;
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+        margin-top: 12px;
+        order: 3; /* place after main form content */
+        max-height: none;
+        overflow: visible;
+      }
+    }
+
+    @media (max-width: 800px) {
+      body { padding: 12px; flex-direction: column; align-items: stretch; }
+      .sidebar { width: 100%; display:flex; gap:8px; margin-bottom: 12px; }
+      .sidebar button { flex:1; font-size:13px; padding:8px; }
+      .form-container { max-width: 100%; }
+    }
   </style>
   <script>
+    // Background image list (ensure these exist in your assets folder or update paths)
     const images = [
       'wallpaper1.jpg','wallpaper2.jpg','wallpaper3.jpg','wallpaper4.jpg','wallpaper5.jpg',
       'wallpaper6.jpg','wallpaper7.jpg','wallpaper8.jpg','wallpaper9.jpg','wallpaper10.jpg',
@@ -180,6 +273,48 @@
       "EG – Pricebook","EG – Pricebook (franchisee only)","EG – Printers","EG – Western union"
     ];
 
+    // Mapping of form field ids to human-readable labels for consistent clipboard output
+    const FIELD_LABELS = {
+      updName: "Name:",
+      updRole: "Role:",
+      updPeak: "Store peak hours:",
+      updWorking: "Available working hours:",
+      updRelated: "Any related/existing ticket:",
+      updError: "What specific error occurred:",
+      updDevice: "On which device:",
+      updSystem: "Which system/equipment is affected:",
+      updAffected: "How many device/s affected:",
+      updStarted: "When did the issue start:",
+      tsCategory: "Troubleshooting Category:",
+      tsSteps: "What actions/troubleshooting steps have been taken:",
+      nextAction: "Next Action Required:",
+      updKB: "KB Article/URL:",
+      // zoom form
+      zoomTicket: "Ticket #:",
+      zoomBanner: "Banner:",
+      zoomStore: "Store #:",
+      zoomSla: "SLA Priority Level:",
+      zoomStatus: "Status:",
+      zoomArea: "Area:",
+      zoomProblemType: "Problem Type:",
+      zoomEquipment: "Equipment:",
+      zoomName: "Name:",
+      zoomRole: "Role:",
+      zoomTsSteps: "What actions/troubleshooting steps have been taken:",
+      // AFU
+      afuName: "Name:",
+      afuRole: "Role:",
+      afuDate: "Call Date:",
+      afuEstTime: "Call Time (ET):",
+      afuReach: "Were you able to reach the store?:",
+      afuCallbackAttempt: "Callback Attempt:",
+      afuContact: "Contact Interaction:",
+      afuOtherContact: "Contact Explanation:",
+      afuActionOwner: "Action Owner:",
+      afuActionTaken: "Action Taken:",
+      afuNextAction: "Next Action Required:"
+    };
+
     function setEquipmentOptions(options) {
       const equipmentSelect = document.getElementById("zoomEquipment");
       equipmentSelect.innerHTML = '';
@@ -196,6 +331,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
+      // Create two bg divs for fading backgrounds
       const fadeBg1 = document.createElement('div');
       const fadeBg2 = document.createElement('div');
       fadeBg1.className = 'bg-fade';
@@ -224,25 +360,35 @@
         active = 1 - active;
       }, 60000);
 
-      document.getElementById('zoomTicket').addEventListener('input', function(e) {
-        validateNumberInput(e, 'zoomTicket', 'zoomTicketError');
-      });
-      document.getElementById('zoomStore').addEventListener('input', function(e) {
-        validateNumberInput(e, 'zoomStore', 'zoomStoreError');
-      });
+      // Attach improved validation (now listens and debounces)
+      const ticketInput = document.getElementById('zoomTicket');
+      const storeInput = document.getElementById('zoomStore');
+      if (ticketInput) {
+        ticketInput.addEventListener('input', function(e) {
+          validateNumberInput(e, 'zoomTicket', 'zoomTicketError');
+        });
+      }
+      if (storeInput) {
+        storeInput.addEventListener('input', function(e) {
+          validateNumberInput(e, 'zoomStore', 'zoomStoreError');
+        });
+      }
 
       const bannerSelect = document.getElementById("zoomBanner");
-      bannerSelect.addEventListener("change", function() {
-        if (bannerSelect.value === "Cumberland Farms (CF)") {
-          setEquipmentOptions(cfEquipmentOptions);
-        } else if (bannerSelect.value !== "") {
-          setEquipmentOptions(egEquipmentOptions);
-        } else {
-          setEquipmentOptions([]);
-        }
-      });
+      if (bannerSelect) {
+        bannerSelect.addEventListener("change", function() {
+          if (bannerSelect.value === "Cumberland Farms (CF)") {
+            setEquipmentOptions(cfEquipmentOptions);
+          } else if (bannerSelect.value !== "") {
+            setEquipmentOptions(egEquipmentOptions);
+          } else {
+            setEquipmentOptions([]);
+          }
+        });
+      }
       setEquipmentOptions([]);
 
+      // placeholders and accessible mapping for existing update form fields
       [
         { id: "updName", placeholder: "Name of caller/contact" },
         { id: "updRole", placeholder: "Manager/Cashier/Staff/Etc." },
@@ -264,7 +410,8 @@
         el.style.color = el.value.length === 0 ? '#aaa' : '#222';
       });
 
-      var actionOwnerEl = document.getElementById('actionOwner');
+      // extra placeholders for AFU fields
+      var actionOwnerEl = document.getElementById('afuActionOwner');
       if (actionOwnerEl) togglePlaceholder(actionOwnerEl, actionOwnerEl.placeholder);
       var callOutcomeEl = document.getElementById('callOutcome');
       if (callOutcomeEl) togglePlaceholder(callOutcomeEl, callOutcomeEl.getAttribute('data-ph'));
@@ -280,6 +427,7 @@
       }
     });
 
+    // When user clears troubleshooting steps
     function fillTroubleshootingSteps() {
       const tsSteps = document.getElementById('tsSteps');
       tsSteps.value = "";
@@ -292,18 +440,44 @@
       document.getElementById(sectionId).classList.add('active');
     }
 
-    function getESTTimeFromDate(dateStr) {
+    // Build an ET-aware formatted timestamp (uses Intl with timeZoneName:'short' so DST shows EDT/EST)
+    function getCurrentTimestampET() {
+      const options = {
+        timeZone: 'America/New_York',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true,
+        timeZoneName: 'short'
+      };
+      return new Intl.DateTimeFormat('en-US', options).format(new Date());
+    }
+
+    // Build an ET-aware formatted datetime for specified local date (combines the selected date with the user's current local time)
+    function getETTimeFromDate(dateStr) {
       if (!dateStr) return "";
+      // Date input format is YYYY-MM-DD
+      const parts = dateStr.split('-').map(Number);
+      if (parts.length !== 3) return "";
+      const [year, month, day] = parts;
       const now = new Date();
-      const dt = new Date(dateStr + 'T' + now.toTimeString().slice(0,5));
-      const estOptions = { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true };
-      return new Intl.DateTimeFormat('en-US', estOptions).format(dt) + " EST";
+      const hour = now.getHours();
+      const minute = now.getMinutes();
+      // Construct a Date in user's local timezone for the selected date at current local time
+      const localDate = new Date(year, month - 1, day, hour, minute, 0);
+      const options = {
+        timeZone: 'America/New_York',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit',
+        hour12: true,
+        timeZoneName: 'short'
+      };
+      return new Intl.DateTimeFormat('en-US', options).format(localDate);
     }
 
     function showEstPopup() {
       const date = document.getElementById('afuDate').value;
       if (!date) return;
-      const estTime = getESTTimeFromDate(date);
+      const estTime = getETTimeFromDate(date);
       if (!estTime) return;
       const popup = document.createElement('div');
       popup.textContent = "Call Date & Time: " + estTime;
@@ -334,32 +508,31 @@
       setTimeout(() => { copyMsg.style.display = 'none'; }, 2000);
     }
 
-    function getCurrentTimestampEST() {
-      const options = { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-      return new Intl.DateTimeFormat('en-US', options).format(new Date()) + " EST";
-    }
-
+    // Remove trailing newlines
     function trimTrailingNewlines(str) {
       return str.replace(/[\r\n]+$/, "");
     }
 
+    // Improved copy: use FIELD_LABELS mapping and include only relevant fields
     function copyServiceChannelForm() {
       const form = document.getElementById('updateForm');
       const fields = form.querySelectorAll('input, textarea, select');
       let result = '';
       fields.forEach(field => {
-        let value = field.value;
-        let labelText = "";
+        if (!field.id && !field.name) return;
+        const labelText = FIELD_LABELS[field.id] || FIELD_LABELS[field.name] || (
+          (field.tagName.toLowerCase() === 'select')
+            ? (form.querySelector('label[for="' + field.id + '"]')?.textContent || field.id)
+            : (form.querySelector('label[for="' + field.id + '"]')?.textContent || field.placeholder || field.name)
+        );
         if (field.tagName.toLowerCase() === 'select') {
-          const label = form.querySelector('label[for="' + field.id + '"]');
-          labelText = label ? label.textContent : field.id;
+          result += labelText + " " + (field.options[field.selectedIndex]?.text || field.value) + "\n";
         } else {
-          labelText = field.previousElementSibling?.textContent || "";
+          result += labelText + " " + (field.value || "") + "\n";
         }
-        result += labelText + " " + value + "\n";
       });
       result = trimTrailingNewlines(result);
-      const ts = getCurrentTimestampEST();
+      const ts = getCurrentTimestampET();
       result += "\n" + ts;
       navigator.clipboard.writeText(result).then(() => showCopyMessageText(ts));
     }
@@ -378,7 +551,7 @@
       });
     }
 
-    // 3-Strike copy actions: no timestamp appended
+    // 3-Strike copy actions: no timestamp appended by intent
     function copyStrikeForm() {
       const ticketText = document.getElementById('ticketUpdateContent').value;
       let result = trimTrailingNewlines(ticketText);
@@ -391,6 +564,46 @@
       navigator.clipboard.writeText(result).then(() => showCopyMessageText('Copied to clipboard!'));
     }
 
+    // Improved numeric validation: debounced, accessible, and doesn't leave stale styles behind
+    function validateNumberInput(event, fieldId, errorId) {
+      const field = event.target;
+      const val = field.value;
+      const errorEl = document.getElementById(errorId);
+
+      // cancel any prior timeout
+      if (field._validationTimeout) {
+        clearTimeout(field._validationTimeout);
+        field._validationTimeout = null;
+      }
+
+      const invalid = val && !/^\d*$/.test(val);
+
+      if (invalid) {
+        field.classList.add('input-error');
+        errorEl.classList.remove('fadein');
+        errorEl.style.display = 'block';
+        errorEl.style.opacity = '1';
+        // brief blink animation
+        field.style.animation = 'blinkError 1s linear 0s 3 alternate';
+        // after animation hide the message but keep the input-error until corrected
+        field._validationTimeout = setTimeout(() => {
+          field.style.animation = '';
+          errorEl.classList.remove('fadein');
+          errorEl.style.display = 'none';
+          errorEl.style.opacity = '0';
+          field._validationTimeout = null;
+        }, 3000);
+      } else {
+        // immediate clear of error styles when corrected
+        field.classList.remove('input-error');
+        field.style.animation = '';
+        errorEl.classList.remove('fadein');
+        errorEl.style.display = 'none';
+        errorEl.style.opacity = '0';
+      }
+    }
+
+    // Copy for Zoom form now uses FIELD_LABELS and timestamp with TZ abbreviation
     function copyZoomForm() {
       const zoomSection = document.getElementById('zoom');
       const ticketInput = document.getElementById('zoomTicket');
@@ -413,17 +626,19 @@
       const fields = zoomSection.querySelectorAll('input, textarea, select');
       let formText = "";
       fields.forEach(field => {
+        if (!field.id && !field.name) return;
+        const key = field.id || field.name;
+        const label = FIELD_LABELS[key] || (zoomSection.querySelector('label[for="' + key + '"]')?.textContent || key);
         if (field.tagName.toLowerCase() === 'select') {
-          const label = zoomSection.querySelector('label[for="' + field.id + '"]');
-          const labelText = label ? label.textContent : field.id;
-          formText += labelText + " " + field.value + "\n";
+          formText += label + " " + (field.options[field.selectedIndex]?.text || field.value) + "\n";
         } else {
-          const labelText = field.placeholder || "";
-          formText += labelText + " " + field.value + "\n";
+          // prefer placeholder (for some text inputs) else label
+          const placeholder = field.placeholder || "";
+          formText += (label || placeholder) + " " + (field.value || "") + "\n";
         }
       });
       formText = trimTrailingNewlines(formText);
-      const ts = getCurrentTimestampEST();
+      const ts = getCurrentTimestampET();
       formText += "\n" + ts;
       navigator.clipboard.writeText(formText).then(() => showCopyMessageText(ts));
     }
@@ -475,6 +690,13 @@
         txt = "Callback store. No response. Phone kept ringing/Call dropped. Left a message in Kaseya. Sent an email to the store.";
       } else if (v === '3rd') {
         txt = "Callback store. No response. phone kept ringing/call dropped.\nLeft a message in Kaseya. Sent an email to DM and store 3rd and Final attempt.";
+      } else if (v === 'Last Attempt') {
+        txt = `We’ve attempted to reach you on four separate occasions regarding your support ticket. As we haven’t received a response, we’ll be proceeding to close the ticket due to inactivity, in line with our 3-Attempts Contact Process outlined in the resolution knowledge base.
+If you still need assistance, please don’t hesitate to reopen the ticket or submit a new request.
+
+KB Article/URL: https://egamerica.atlassian.net/wiki/spaces/TSKB/pages/3654352941/3-Attempts+Contact+Process`;
+        // set default next action for Last Attempt
+        document.getElementById('afuNextAction').value = 'Closing Ticket "Completed/Confirmed"';
       }
       document.getElementById('afuActionTaken').value = txt;
     }
@@ -482,7 +704,7 @@
       document.getElementById('afuOtherContact').style.display = document.getElementById('afuContact').value === 'Others' ? 'block' : 'none';
     }
 
-    // Modified: removed timestamp append and added "Actions/Follow-Up" header when copying
+    // Modified AFU copy: include Actions/Follow-Up header; no automatic timestamp append by intent
     function afuCopyForm() {
       const name = document.getElementById('afuName').value;
       const role = document.getElementById('afuRole').value;
@@ -527,46 +749,20 @@
       document.getElementById('afuNextAction').value = "";
       document.getElementById('afuCopyMsg').style.display = 'none';
     }
-    function validateNumberInput(event, fieldId, errorId) {
-      const val = event.target.value;
-      const field = event.target;
-      const errorEl = document.getElementById(errorId);
-
-      if (val && !/^\d*$/.test(val)) {
-        field.classList.add('input-error');
-        errorEl.classList.remove('fadein');
-        errorEl.style.display = 'block';
-        errorEl.style.opacity = '1';
-        field.style.animation = 'blinkError 1s linear 0s 5 alternate';
-        errorEl.classList.add('fadein');
-        setTimeout(() => {
-          field.style.animation = '';
-          errorEl.classList.remove('fadein');
-          errorEl.style.display = 'none';
-          errorEl.style.opacity = '0';
-        }, 5000);
-      } else {
-        field.classList.remove('input-error');
-        field.style.animation = '';
-        errorEl.classList.remove('fadein');
-        errorEl.style.display = 'none';
-        errorEl.style.opacity = '0';
-      }
-    }
   </script>
 </head>
 <body>
-  <div class="sidebar">
-    <button onclick="showForm('update')">Service Channel</button>
-    <button onclick="showForm('strike')">3-Strike Rule Template</button>
-    <button onclick="showForm('zoom')">Zoom/Teams Channel</button>
-    <button onclick="showForm('actionsFollowUp')">Actions/Follow-Up</button>
+  <div class="sidebar" role="navigation" aria-label="Templates navigation">
+    <button onclick="showForm('update')" aria-controls="update">Service Channel</button>
+    <button onclick="showForm('strike')" aria-controls="strike">3-Strike Rule Template</button>
+    <button onclick="showForm('zoom')" aria-controls="zoom">Zoom/Teams Channel</button>
+    <button onclick="showForm('actionsFollowUp')" aria-controls="actionsFollowUp">Actions/Follow-Up</button>
   </div>
 
   <div class="form-container">
-    <div id="update" class="form-section active">
+    <div id="update" class="form-section active" aria-labelledby="serviceChannelHeading">
       <div class="form-box">
-        <h2>Service Channel</h2>
+        <h2 id="serviceChannelHeading">Service Channel</h2>
         <form id="updateForm" autocomplete="off">
           <label for="updName">Name:</label>
           <input type="text" id="updName" name="updName" placeholder="Name of caller/contact" />
@@ -624,17 +820,17 @@
           <label for="updKB">KB Article/URL:</label>
           <input type="text" id="updKB" name="updKB" />
 
-          <button type="button" class="copy-btn" onclick="copyServiceChannelForm()">Copy Form</button>
-          <button type="button" class="clear-btn" onclick="clearServiceChannelForm()">Clear Form</button>
+          <button type="button" class="copy-btn" onclick="copyServiceChannelForm()" aria-label="Copy service channel form to clipboard">Copy Form</button>
+          <button type="button" class="clear-btn" onclick="clearServiceChannelForm()" aria-label="Clear service channel form">Clear Form</button>
         </form>
       </div>
     </div>
 
-    <div id="strike" class="form-section">
+    <div id="strike" class="form-section" aria-labelledby="strikeHeading">
       <div class="form-box">
-        <h2>3-Strike Rule Template</h2>
+        <h2 id="strikeHeading">3-Strike Rule Template</h2>
         <h3>ServiceChannel Template</h3>
-        <textarea id="ticketUpdateContent" rows="10">Callback store. No response. phone kept ringing/call dropped.
+        <textarea id="ticketUpdateContent" rows="10" aria-label="3-strike service channel template">Callback store. No response. phone kept ringing/call dropped.
 Left a message in Kaseya. Sent an email to the store.
 No. of callback: 1st / 2nd / 3rd and Final
 
@@ -646,7 +842,7 @@ Close ticket after no response from store or DM after 3rd and Final attempt.</te
       <button class="copy-btn" onclick="copyStrikeForm()">Copy Form</button>
       <div class="form-box">
         <h3>Email Template</h3>
-        <textarea id="emailTemplateContent" rows="18">Subject: (1st, 2nd, 3rd) Follow-Up on Ticket #[TICKET NUMBER] – Store Action Required
+        <textarea id="emailTemplateContent" rows="18" aria-label="3-strike email template">Subject: (1st, 2nd, 3rd) Follow-Up on Ticket #[TICKET NUMBER] – Store Action Required
 
 Hi Store *****,
 
@@ -668,15 +864,19 @@ Thank you for your attention to this matter.</textarea>
       <button class="copy-btn" onclick="copyEmailContent()">Copy Email</button>
     </div>
 
-    <div id="zoom" class="form-section">
+    <div id="zoom" class="form-section" aria-labelledby="zoomHeading">
       <div class="form-box">
-        <h2>Zoom/Teams Channel</h2>
+        <h2 id="zoomHeading">Zoom/Teams Channel</h2>
         <h3>Ticket Information</h3>
-        <input type="text" placeholder="Ticket Description:" />
-        <input type="text" placeholder="Ticket #:" id="zoomTicket" />
-        <div id="zoomTicketError" class="error-message">This entry can only contain numbers.</div>
+        <label class="sr-only" for="zoomTicketDesc">Ticket Description</label>
+        <input id="zoomTicketDesc" type="text" placeholder="Ticket Description:" aria-label="Ticket Description" />
+
+        <label for="zoomTicket">Ticket #:</label>
+        <input type="text" placeholder="Ticket #:" id="zoomTicket" aria-describedby="zoomTicketError" />
+        <div id="zoomTicketError" class="error-message" role="alert">This entry can only contain numbers.</div>
+
         <label for="zoomBanner">Banner:</label>
-        <select id="zoomBanner">
+        <select id="zoomBanner" aria-label="Banner selection">
           <option value="">--Select Banner--</option>
           <option value="Certified Oil (CO)">Certified Oil (CO)</option>
           <option value="Certified Oil - Pilot Store (CO)">Certified Oil - Pilot Store (CO)</option>
@@ -699,8 +899,11 @@ Thank you for your attention to this matter.</textarea>
           <option value="Turkey Hill (TH)">Turkey Hill (TH)</option>
           <option value="Turkey Hill Midwest (TM)">Turkey Hill Midwest (TM)</option>
         </select>
-        <input type="text" placeholder="Store #:" id="zoomStore" />
-        <div id="zoomStoreError" class="error-message">This entry can only contain numbers.</div>
+
+        <label for="zoomStore">Store #:</label>
+        <input type="text" placeholder="Store #:" id="zoomStore" aria-describedby="zoomStoreError" />
+        <div id="zoomStoreError" class="error-message" role="alert">This entry can only contain numbers.</div>
+
         <label for="zoomSla">SLA Priority Level:</label>
         <select id="zoomSla">
           <option value="">--Select Priority--</option>
@@ -709,6 +912,7 @@ Thank you for your attention to this matter.</textarea>
           <option value="Urgent (P3)">Urgent (P3)</option>
           <option value="Normal (P4)">Normal (P4)</option>
         </select>
+
         <label for="zoomStatus">Status:</label>
         <select id="zoomStatus">
           <option value="">--Select Status--</option>
@@ -746,12 +950,14 @@ Thank you for your attention to this matter.</textarea>
           <option value="Completed/Supply manager fulfillment">Completed/Supply manager fulfillment</option>
           <option value="Completed/Validation Required">Completed/Validation Required</option>
         </select>
+
         <label for="zoomArea">Area:</label>
         <select id="zoomArea">
           <option value="">--Select Area--</option>
           <option value="Back Office/IT">Back Office/IT</option>
           <option value="EG Stores">EG Stores</option>
         </select>
+
         <label for="zoomProblemType">Problem Type:</label>
         <select id="zoomProblemType">
           <option value="">--Select Problem Type--</option>
@@ -762,35 +968,58 @@ Thank you for your attention to this matter.</textarea>
           <option value="Fueling System">Fueling System</option>
           <option value="General Maintenance">General Maintenance</option>
         </select>
+
         <label for="zoomEquipment">Equipment:</label>
-        <select id="zoomEquipment">
+        <select id="zoomEquipment" aria-label="Equipment selection">
         </select>
       </div>
+
       <div class="form-box">
         <h3>Details</h3>
         <label for="zoomName">Name:</label>
         <input type="text" id="zoomName" placeholder="Name of caller/contact" />
+
         <label for="zoomRole">Role:</label>
         <input type="text" id="zoomRole" placeholder="Manager/Cashier/Staff/etc." />
-        <input type="text" placeholder="Store peak hours:" />
-        <input type="text" placeholder="Available operating/working hours:" />
-        <input type="text" placeholder="Any related/existing ticket:" />
-        <input type="text" placeholder="What specific error occurred:" />
-        <input type="text" placeholder="On which device:" />
-        <input type="text" placeholder="Which system/equipment is affected:" />
-        <input type="text" placeholder="How many device/s affected:" />
-        <input type="text" placeholder="When did the Issue start:" />
+
+        <label for="zoomPeak">Store peak hours:</label>
+        <input id="zoomPeak" type="text" placeholder="Store peak hours:" />
+
+        <label for="zoomWorking">Available operating/working hours:</label>
+        <input id="zoomWorking" type="text" placeholder="Available operating/working hours:" />
+
+        <label for="zoomRelated">Any related/existing ticket:</label>
+        <input id="zoomRelated" type="text" placeholder="Any related/existing ticket:" />
+
+        <label for="zoomError">What specific error occurred:</label>
+        <input id="zoomError" type="text" placeholder="What specific error occurred:" />
+
+        <label for="zoomDevice">On which device:</label>
+        <input id="zoomDevice" type="text" placeholder="On which device:" />
+
+        <label for="zoomSystem">Which system/equipment is affected:</label>
+        <input id="zoomSystem" type="text" placeholder="Which system/equipment is affected:" />
+
+        <label for="zoomAffected">How many device/s affected:</label>
+        <input id="zoomAffected" type="text" placeholder="How many device/s affected:" />
+
+        <label for="zoomStarted">When did the Issue start:</label>
+        <input id="zoomStarted" type="text" placeholder="When did the Issue start:" />
+
         <label for="zoomTsSteps">What actions/troubleshooting steps have been taken:</label>
         <textarea id="zoomTsSteps" placeholder="Include phone discussion and full TS Steps" rows="5"></textarea>
-        <input type="text" placeholder="KB Article/URL:" />
+
+        <label for="zoomKB">KB Article/URL:</label>
+        <input id="zoomKB" type="text" placeholder="KB Article/URL:" />
       </div>
+
       <button class="copy-btn" onclick="copyZoomForm()">Copy Form</button>
       <button class="clear-btn" onclick="clearZoomForm()">Clear Form</button>
     </div>
 
-    <div id="actionsFollowUp" class="form-section">
+    <div id="actionsFollowUp" class="form-section" aria-labelledby="afuHeading">
       <div class="form-box">
-        <h2>Actions/Follow-Up</h2>
+        <h2 id="afuHeading">Actions/Follow-Up</h2>
         <label for="afuName">Name:</label>
         <input type="text" id="afuName" placeholder="Name:" />
 
@@ -799,9 +1028,9 @@ Thank you for your attention to this matter.</textarea>
 
         <label for="afuDate">Call Date & Time:</label>
         <div style="display:flex;align-items:center;gap:8px;">
-          <span class="calendar-icon"></span>
-          <input type="date" id="afuDate" style="width:140px;" onchange="showEstPopup()" oninput="showEstPopup()">
-          <span id="afuEstTime" style="font-size:15px;color:#007BFF;margin-left:12px;"></span>
+          <span class="calendar-icon" aria-hidden="true"></span>
+          <input type="date" id="afuDate" style="width:140px;" onchange="showEstPopup()" oninput="showEstPopup()" aria-label="Call date">
+          <span id="afuEstTime" style="font-size:15px;color:#007BFF;margin-left:12px;" aria-live="polite"></span>
         </div>
 
         <label for="afuReach">Were you able to reach the store?</label>
@@ -818,6 +1047,7 @@ Thank you for your attention to this matter.</textarea>
             <option value="1st">1st</option>
             <option value="2nd">2nd</option>
             <option value="3rd">3rd</option>
+            <option value="Last Attempt">Last Attempt</option>
           </select>
         </div>
 
@@ -833,9 +1063,7 @@ Thank you for your attention to this matter.</textarea>
           <input type="text" id="afuOtherContact" placeholder="Please explain:" style="display:none;">
         </div>
 
-        <label for="afuActionOwner">
-          Action Owner:
-        </label>
+        <label for="afuActionOwner">Action Owner:</label>
         <input type="text" id="afuActionOwner" placeholder="e.g., Helpdesk, Escalation, FTS, FSS etc." required />
 
         <label for="afuActionTaken">Action Taken:</label>
@@ -851,10 +1079,13 @@ Thank you for your attention to this matter.</textarea>
     </div>
   </div>
 
-  <div style="position: absolute; top: 20px; right: 20px; width: 600px; padding: 15px; background-color: #ffffffcc; border: 2px solid #ccc; border-radius: 10px; font-family: Arial, sans-serif; font-size: 14px;">
-    <h3>📌Reminders📌</h3>
+  <!-- Replaced absolute positioned reminders with an aside that participates in layout -->
+  <aside class="reminders" aria-labelledby="remindersHeading" role="complementary">
+    <h3 id="remindersHeading">📌Reminders📌</h3>
+
+    <!-- Alphabetically ordered links and messages -->
     <span class="fade-link" onclick="fadeToggle('fssMsg')">FSS handles Pump &amp; Card Reader Hardware Issues</span>
-    <div id="fssMsg" class="fade-message">
+    <div id="fssMsg" class="fade-message" aria-hidden="true">
       CF IT Techs (FTS) do NOT handle any physical hardware issues with pumps or dispensers, including:<br>
       <ul>
         <li>Card readers not working</li>
@@ -863,28 +1094,45 @@ Thank you for your attention to this matter.</textarea>
       </ul>
       These issues should be escalated directly to Gas Maintenance (FSS), provided KBs for EO1 error / Avalan have already been followed.
     </div>
-    <span class="fade-link" onclick="fadeToggle('afterHoursMsg')">Weekend/After-Hours Support &amp; Escalations</span>
-    <div id="afterHoursMsg" class="fade-message">
+
+    <span class="fade-link" onclick="fadeToggle('fuelSpillMsg')">Fuel Spill Handling</span>
+    <div id="fuelSpillMsg" class="fade-message" aria-hidden="true">
+      As the Help Desk team covers after hours for FSS, please ensure the following process is followed for fuel spill calls:
+      <ol>
+        <li>Transfer the call to the SPILL LINE (1-800-225-9702 x4494) before completing the service channel ticket.</li>
+        <li>Once the category falls under the FSS team, the ticket automatically routes to their queue. Transferring the call first ensures proper handling.</li>
+        <li>Log a note on the ticket that the call was properly transferred to the spill line.</li>
+        <li>Post confirmation in the FSS Zoom channel for visibility.</li>
+      </ol>
+      <p>CF IT Techs (FTS) do NOT handle any physical hardware issues with pumps or dispensers, including:</p>
+      <ul>
+        <li>Card readers not working</li>
+        <li>Errors on card reader screens</li>
+        <li>Pumps not dispensing fuel</li>
+      </ul>
+      <p>These issues should be escalated directly to Gas Maintenance (FSS), provided KBs for EO1 error / Avalan have already been followed.</p>
+    </div>
+
+    <span class="fade-link" onclick="fadeToggle('reinforceMsg')">Reinforce After-Hours Support Process</span>
+    <div id="reinforceMsg" class="fade-message" aria-hidden="true">
       <b>Down Store Incidents:</b><br>
       Store Escalations (After Hours)<br>
       Helpdesk L2s/Leads will post the issue in the (EGA) MS Teams Channel.<br>
       <ul>
-        <li>If no response after 15 minutes, a follow-up message will be sent.</li>
-        <li>If still no response after 15 more minutes, the Zoom Pod Store Escalations number will be called for urgent down store issues.</li>
+        <li>Make multiple call attempts if the first one fails.</li>
+        <li>Leave a voicemail on the first attempt to ensure the on-call contact is informed.</li>
+        <li>Use the correct contact number (mobile) instead of Zoom to avoid missed connections.</li>
+        <li>All tickets must also be posted to both Facilities and FTS Zoom channels.</li>
       </ul>
       <b>FTS (After Hours)</b>
       <ul>
         <li>If confirmed down store and requires hardware replacement or on-site support, contact on-call FTS immediately.</li>
+        <li>If the on-call contact is unreachable after the 3rd attempt, escalate to John Wingo – details available in the FTS Zoom channel.</li>
       </ul>
-      <b>Hypercare Incidents:</b>
+      <b>Facilities (After Hours)</b>
       <ul>
-        <li>Store Escalations (After Hours)</li>
-        <li>Helpdesk L2s/Leads will post the issue in the (EGA) MS Teams Channel and wait a response from the Store Escalations team after posting in the channel.</li>
-      </ul>
-      <b>FTS (After Hours):</b>
-      <ul>
-        <li>Contact the on-call team only during local business hours.</li>
-        <li>If a ticket is submitted after hours on Friday, wait until Saturday morning (during local daytime hours) to reach out.</li>
+        <li>Call the on-call gas technicians listed in the GC posted by George.</li>
+        <li>If unreachable, and for other issues aside from gas-related concerns, contact Alicia and Jonathan using their mobile numbers (available in the KB).</li>
       </ul>
       <b>MIM Incidents</b>
       <ul>
@@ -892,9 +1140,8 @@ Thank you for your attention to this matter.</textarea>
         <li>Engage MIMs Immediately (within 30mins)</li>
         <li>Initiate a call to the Major Incident Management (MIM) team.</li>
         <li>Major Incident - SWAT and Problem Process</li>
-        <li>Enable Pre-Queue for Support Channels</li>
-        <li>Activate pre-queue for Five9/Kaseya to manage call volumes.</li>
-        <li>Five9 Pre-queue Creation process</li>
+        <li>Activate MOTD for AWS/Kaseya to manage call volumes.</li>
+        <li>AWS MOTD Creation process</li>
         <li>Send Kaseya Notification</li>
         <li>Issue mass communication via Kaseya to notify affected users.</li>
         <li>Sending Kaseya Message</li>
@@ -923,8 +1170,40 @@ Thank you for your attention to this matter.</textarea>
         <li>Maintain a running log until resolution is confirmed.</li>
       </ul>
     </div>
-  </div>
 
-  <div id="copyMessage">Copied to clipboard!</div>
+    <span class="fade-link" onclick="fadeToggle('virtualizedMsg')">Virtualized Support Process</span>
+    <div id="virtualizedMsg" class="fade-message" aria-hidden="true">
+      <h4>Virtualized Support Process</h4>
+      <ol>
+        <li>
+          If the store ticket is tagged as DOWNSTORE and it has been 1–5 days since the virtualization date,
+          → Contact the on-call virtualization resource for immediate assistance.
+          <br/>
+          Please call Nelson Garcia — (508) 270-5808, (774) 386-1250
+        </li>
+        <li>For general issues, → The store should submit an SSP ticket or call the Helpdesk (Option 4)</li>
+        <li>The Helpdesk will:
+          <ul>
+            <li>Identify the issue.</li>
+            <li>Gather necessary details from the store.</li>
+            <li>Submit a Smartsheet form to the project team for resolution.</li>
+          </ul>
+          → Bug &amp; Issues Log Submission Form Link:
+          <br/>
+          <a href="https://app.smartsheet.com/b/form/c72a0e3154e54aadb1cb623e5462fea2" target="_blank" rel="noopener noreferrer">https://app.smartsheet.com/b/form/c72a0e3154e54aadb1cb623e5462fea2</a>
+        </li>
+        <li>Helpdesk updates the Service Channel ticket with the note: "Submitted to Project team for resolution. Will provide status update shortly”</li>
+        <li>Helpdesk team uses the Bug &amp; Issues tracker to monitor progress.
+          <br/>
+          → Bug &amp; Issues Log for Monitoring:
+          <br/>
+          <a href="https://app.smartsheet.com/sheets/jV56GgpGHq6mJmCHPC3xqQxpV5mFWW2M7mfmMrH1?view=grid" target="_blank" rel="noopener noreferrer">https://app.smartsheet.com/sheets/jV56GgpGHq6mJmCHPC3xqQxpV5mFWW2M7mfmMrH1?view=grid</a>
+        </li>
+      </ol>
+      <p>Once the issue is resolved, → Update the ticket on the Service Channel accordingly.</p>
+    </div>
+  </aside>
+
+  <div id="copyMessage" role="status" aria-live="polite">Copied to clipboard!</div>
 </body>
 </html>
